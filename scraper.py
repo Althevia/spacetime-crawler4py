@@ -3,8 +3,8 @@ from urllib.parse import urlparse
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
-    print(url)
-    print(is_valid(url))
+    #print(url)
+    #print(is_valid(url))
     return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp):
@@ -19,10 +19,10 @@ def is_valid(url):
         #^(.*\.|)stat\.uci\.edu(|(\/|#|\?).*)$
         #^(www\.|)today\.uci\.edu\/department\/information_computer_sciences(|(\/|#|\?).*)$
         parsed = urlparse(url)
-        print(parsed.netloc.lower())
+        #print(parsed.netloc.lower())
         if parsed.scheme not in set(["http", "https"]):
             return False
-        return not re.match(
+        p = not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
             + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
@@ -30,13 +30,15 @@ def is_valid(url):
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower()) and re.match(
-            r"^(.*\.|)ics\.uci\.edu$"
-            + r"^(.*\.|)cs\.uci\.edu$"
-            + r"^(.*\.|)informatics\.uci\.edu$"
-            + r"^(.*\.|)stat\.uci\.edu$"
-            + r"^(www\.|)today\.uci\.edu\/department\/information_computer_sciences$",parsed.netloc.lower())
-
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower()) 
+        r = not not re.match(
+            r"((.*\.|)ics\.uci\.edu)|"
+            + r"((.*\.|)cs\.uci\.edu)|"
+            + r"((.*\.|)informatics\.uci\.edu)|"
+            + r"((.*\.|)stat\.uci\.edu)|"
+            + r"((www\.|)today\.uci\.edu\/department\/information_computer_sciences)",parsed.netloc.lower())
+        #print(p, r)
+        return p and r
     except TypeError:
         print ("TypeError for ", parsed)
         raise
