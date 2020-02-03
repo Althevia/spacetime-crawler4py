@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
+    print(is_valid("https://asdlhsad.com"))
     return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp):
@@ -10,12 +11,12 @@ def extract_next_links(url, resp):
     return list()
 
 def is_valid(url):
-    #^(.*\.|)ics\.uci\.edu(|(\/|#|\?).*)$
-    #^(.*\.|)cs\.uci\.edu(|(\/|#|\?).*)$
-    #^(.*\.|)informatics\.uci\.edu(|(\/|#|\?).*)$
-    #^(.*\.|)stat\.uci\.edu(|(\/|#|\?).*)$
-    #^(www\.|)today\.uci\.edu\/department\/information_computer_sciences(|(\/|#|\?).*)$
-    try:
+    try:   
+        #^(.*\.|)ics\.uci\.edu(|(\/|#|\?).*)$
+        #^(.*\.|)cs\.uci\.edu(|(\/|#|\?).*)$
+        #^(.*\.|)informatics\.uci\.edu(|(\/|#|\?).*)$
+        #^(.*\.|)stat\.uci\.edu(|(\/|#|\?).*)$
+        #^(www\.|)today\.uci\.edu\/department\/information_computer_sciences(|(\/|#|\?).*)$
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
             return False
@@ -28,11 +29,11 @@ def is_valid(url):
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower()) and re.match(
-            r"^(.*\.|)ics\.uci\.edu(|(\/|#|\?).*)$"
-            + r"^(.*\.|)cs\.uci\.edu(|(\/|#|\?).*)$"
-            + r"^(.*\.|)informatics\.uci\.edu(|(\/|#|\?).*)$"
-            + r"^(.*\.|)stat\.uci\.edu(|(\/|#|\?).*)$"
-            + r"^(www\.|)today\.uci\.edu\/department\/information_computer_sciences(|(\/|#|\?).*)$",parsed.netloc.lower())
+            r"^(.*\.|)ics\.uci\.edu$"
+            + r"^(.*\.|)cs\.uci\.edu$"
+            + r"^(.*\.|)informatics\.uci\.edu$"
+            + r"^(.*\.|)stat\.uci\.edu$"
+            + r"^(www\.|)today\.uci\.edu\/department\/information_computer_sciences$",parsed.netloc.lower())
 
     except TypeError:
         print ("TypeError for ", parsed)
