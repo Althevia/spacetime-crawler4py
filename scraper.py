@@ -10,6 +10,11 @@ def extract_next_links(url, resp):
     return list()
 
 def is_valid(url):
+    #^(.*\.|)ics\.uci\.edu(|(\/|#|\?).*)$
+    #^(.*\.|)cs\.uci\.edu(|(\/|#|\?).*)$
+    #^(.*\.|)informatics\.uci\.edu(|(\/|#|\?).*)$
+    #^(.*\.|)stat\.uci\.edu(|(\/|#|\?).*)$
+    #^(www\.|)today\.uci\.edu\/department\/information_computer_sciences(|(\/|#|\?).*)$
     try:
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
@@ -23,6 +28,13 @@ def is_valid(url):
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
+            and re.match(
+            r"^(.*\.|)ics\.uci\.edu(|(\/|#|\?).*)$"
+            + r"^(.*\.|)cs\.uci\.edu(|(\/|#|\?).*)$"
+            + r"^(.*\.|)informatics\.uci\.edu(|(\/|#|\?).*)$"
+            + r"^(.*\.|)stat\.uci\.edu(|(\/|#|\?).*)$"
+            + r"^(www\.|)today\.uci\.edu\/department\/information_computer_sciences(|(\/|#|\?).*)$"
+            ,parsed.netloc.lower())
 
     except TypeError:
         print ("TypeError for ", parsed)
