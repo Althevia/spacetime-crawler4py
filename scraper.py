@@ -29,8 +29,12 @@ def extract_next_links(url, resp):
 
 def getText(url):
     rawHtml = urlopen(url).read().decode("utf-8") #Gets the string of the entire html document
-    tags = re.compile(r"<.*>")
-    noTagsString = re.sub(tags," ",rawHtml)
+    tags = re.compile(r"<script.*<\/script>")  
+    noTagsString = re.sub(tags," ",rawHtml) #Scripts hold undesired data
+    tags = re.compile(r'<meta .*content="')
+    noTagsString = re.sub(tags," ",noTagsString)
+    tags = re.compile(r"<.*>")      #Remove all tags
+    noTagsString = re.sub(tags," ",noTagsString)
     print(noTagsString)
 
 
