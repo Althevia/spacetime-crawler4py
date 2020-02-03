@@ -2,7 +2,6 @@ import re
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from lxml import html
-from bs4 import BeautifulSoup
 
 uniqueDict = dict()
 
@@ -31,8 +30,9 @@ def extract_next_links(url, resp):
 def getText(url):
     rawHtml = urlopen(url).read() #Gets the string of the entire html document
     stringDoc = html.fromstring(rawHtml)
-    soup = BeautifulSoup(stringDoc,"lxml")
-    print(soup.get_text())
+    tags = re.compile('<.*>')
+    noTagsString = re.sub(tags," ",stringDoc)
+    print(noTagsString)
 
 
 def is_valid(url):
