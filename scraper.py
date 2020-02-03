@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
-    print(is_valid("https://asdlhsad.com"))
+    print(is_valid(url))
     return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp):
