@@ -3,6 +3,8 @@ from urllib.parse import urlparse
 from urllib.request import urlopen
 from lxml import html
 
+uniqueDict = dict()
+
 def scraper(url, resp):
     if 399 < resp.status < 607:
         return list()
@@ -14,7 +16,15 @@ def extract_next_links(url, resp):
     rawHtml = urlopen(url).read() #Gets the string of the entire html document
     stringDoc = html.fromstring(rawHtml)
     linksList = list(stringDoc.iterlinks()) #List of tuples of link kind of objects
-    return [link[2] for link in linksList] #Creates a list of links from all the tuples in linksList
+    listOfLinks = []
+    for link in linksList:
+        parsed = urlparse(link[2])
+        fragLen = len(parsed.fragment)  #Remove the fragments
+        defraggedLink = link[2][0:len(link[2])-fragLen]
+        if uniqueDict.get(defraggedLink) == None:
+            uniqueDict[degraggedLink] = 1
+            listOfLinks.append(defraggedLink) #Add to list of links
+    return listOfLinks
 
 def is_valid(url):
     try:   
