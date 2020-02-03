@@ -27,14 +27,12 @@ def is_valid(url):
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
-            and re.match(
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower()) and re.match(
             r"^(.*\.|)ics\.uci\.edu(|(\/|#|\?).*)$"
             + r"^(.*\.|)cs\.uci\.edu(|(\/|#|\?).*)$"
             + r"^(.*\.|)informatics\.uci\.edu(|(\/|#|\?).*)$"
             + r"^(.*\.|)stat\.uci\.edu(|(\/|#|\?).*)$"
-            + r"^(www\.|)today\.uci\.edu\/department\/information_computer_sciences(|(\/|#|\?).*)$"
-            ,parsed.netloc.lower())
+            + r"^(www\.|)today\.uci\.edu\/department\/information_computer_sciences(|(\/|#|\?).*)$",parsed.netloc.lower())
 
     except TypeError:
         print ("TypeError for ", parsed)
