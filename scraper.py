@@ -28,10 +28,9 @@ def extract_next_links(url, resp):
     return listOfLinks
 
 def getText(url):
-    rawHtml = urlopen(url).read() #Gets the string of the entire html document
-    stringDoc = html.fromstring(rawHtml)
-    tags = re.compile('<.*>')
-    noTagsString = re.sub(tags," ",stringDoc)
+    rawHtml = urlopen(url).read().decode("utf-8") #Gets the string of the entire html document
+    tags = re.compile(r"<.*>")
+    noTagsString = re.sub(tags," ",rawHtml)
     print(noTagsString)
 
 
