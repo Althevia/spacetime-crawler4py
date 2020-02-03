@@ -2,11 +2,12 @@ import re
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from lxml import html
+from bs4 import BeautifulSoup
 
 uniqueDict = dict()
 
 def scraper(url, resp):
-    print(len(uniqueDict))
+    getText(url)
     if 399 < resp.status < 607:
         return list()
     links = extract_next_links(url, resp)
@@ -26,6 +27,13 @@ def extract_next_links(url, resp):
             uniqueDict[defraggedLink] = 1
             listOfLinks.append(defraggedLink) #Add to list of links
     return listOfLinks
+
+def getText(url):
+    rawHtml = urlopen(url).read() #Gets the string of the entire html document
+    stringDoc = html.fromstring(rawHtml)
+    soup = BeautifulSoup(stringDoc,"lxml")
+    print(soup.get_text())
+
 
 def is_valid(url):
     try:   
