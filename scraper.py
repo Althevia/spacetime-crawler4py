@@ -6,6 +6,7 @@ from lxml import html
 uniqueDict = dict()
 
 def scraper(url, resp):
+    print(len(uniqueDict))
     if 399 < resp.status < 607:
         return list()
     links = extract_next_links(url, resp)
@@ -22,7 +23,7 @@ def extract_next_links(url, resp):
         fragLen = len(parsed.fragment)  #Remove the fragments
         defraggedLink = link[2][0:len(link[2])-fragLen]
         if uniqueDict.get(defraggedLink) == None:
-            uniqueDict[degraggedLink] = 1
+            uniqueDict[defraggedLink] = 1
             listOfLinks.append(defraggedLink) #Add to list of links
     return listOfLinks
 
