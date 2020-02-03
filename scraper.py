@@ -1,5 +1,7 @@
 import re
 from urllib.parse import urlparse
+from urllib.request import urlopen
+from lxml import html
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -9,7 +11,11 @@ def scraper(url, resp):
 
 def extract_next_links(url, resp):
     # Implementation requred.
-    return list()
+    #get the actual document html text
+    rawHtml = urlopen(url).read()
+    stringDoc = html.fromstring(rawHtml)
+    linksList = list(stringDoc.iterlinks())
+    return [link[2] for link in linksList]
 
 def is_valid(url):
     try:   
