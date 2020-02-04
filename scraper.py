@@ -2,11 +2,12 @@ import re
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from lxml import html
+import htmlParser
 
 uniqueDict = dict()
 
 def scraper(url, resp):
-    getText(url)
+    getText(url,resp)
     if 399 < resp.status < 607:
         return list()
     links = extract_next_links(url, resp)
@@ -14,7 +15,7 @@ def scraper(url, resp):
 
 def extract_next_links(url, resp):
     # Implementation requred.
-    rawHtml = urlopen(url).read() #Gets the string of the entire html document
+    rawHtml = resp.raw_response.content #Gets the string of the entire html document
     stringDoc = html.fromstring(rawHtml)
     linksList = list(stringDoc.iterlinks()) #List of tuples of link kind of objects
     listOfLinks = []
@@ -27,15 +28,17 @@ def extract_next_links(url, resp):
             listOfLinks.append(defraggedLink) #Add to list of links
     return listOfLinks
 
-def getText(url):
-    rawHtml = urlopen(url).read().decode("utf-8") #Gets the string of the entire html document
-    tags = re.compile(r"<script.*<\/script>")  
-    noTagsString = re.sub(tags," ",rawHtml) #Scripts hold undesired data
-    tags = re.compile(r'<meta .*name="description".*content="')
-    noTagsString = re.sub(tags," ",noTagsString)
-    tags = re.compile(r"<.*>")      #Remove all tags
-    noTagsString = re.sub(tags," ",noTagsString)
-    print(noTagsString)
+def getText(url,resp):
+    rawHtml = resp.raw_response.content #Gets the string of the entire html document
+    # tags = re.compile(r"<script.*<\/script>")  
+    # noTagsString = re.sub(tags," ",rawHtml) #Scripts hold undesired data
+    # tags = re.compile(r'<meta .*name="description".*content="')
+    # noTagsString = re.sub(tags," ",noTagsString)
+    # tags = re.compile(r"<.*>")      #Remove all tags
+    # noTagsString = re.sub(tags," ",noTagsString)
+    parser = GoodTextParser()
+    parser.feed(rawHtml)
+    print(parser.keptText)
 
 
 def is_valid(url):
