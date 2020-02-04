@@ -3,13 +3,17 @@ from urllib.parse import urlparse
 from urllib.request import urlopen
 from lxml import html
 from htmlParser import GoodTextParser
+import shelve
 
-uniqueDict = dict()
+
+# Load existing save file, or create one if it does not exist.
+wordCounts = shelve.open("wordCounts.shelve")
+uniqueURLs = shelve.open("uniqueURLs.shelve")
 
 def scraper(url, resp):
-    getText(url,resp)
     if 399 < resp.status < 607:
         return list()
+    tokenize(url)
     links = extract_next_links(url, resp)
     return [link for link in links if is_valid(link)]
 
@@ -23,12 +27,12 @@ def extract_next_links(url, resp):
         parsed = urlparse(link[2])
         fragLen = len(parsed.fragment)  #Remove the fragments
         defraggedLink = link[2][0:len(link[2])-fragLen]
-        if uniqueDict.get(defraggedLink) == None:
-            uniqueDict[defraggedLink] = 1
+        if uniqueURLs.get(defraggedLink) == None:
+            uniqueURLs[defraggedLink] = 1
             listOfLinks.append(defraggedLink) #Add to list of links
     return listOfLinks
 
-def getText(url,resp):
+def tokenize(url):
     rawHtml =urlopen(url).read().decode("utf-8") #resp.raw_response.content #Gets the string of the entire html document
     # tags = re.compile(r"<script.*<\/script>")  
     # tags = re.compile(r'<meta .*name="description".*content="')
@@ -38,6 +42,41 @@ def getText(url,resp):
     parser = GoodTextParser()
     parser.feed(rawHtml)
     print(parser.keptText)
+
+    totalWords = 0
+    #Stolen from Annie's assignment 1 (but modified)
+    for line in parser.keptText:
+        token = ""
+        for c in line:
+            numCode = ord(c)
+            if 91 > numCode > 64:    #Checks upper case letters
+                token += (c.lower())    #Converts upper to lower
+            elif 123 > numCode > 96 or 47 < numCode < 58 or numCode == 39:   #Checks lower case letters or numbers or '
+                token += c
+            elif token != "":
+                totalWords += 1
+                if wordCounts.get(word) != None:
+                    wordCounts[word] += 1
+                else:
+                    wordCounts[word] = 1
+                token = ""
+    if token != "":
+        totalWords += 1
+        if wordCounts.get(word) != None:
+            wordCounts[word] += 1
+        else:
+            wordCounts[word] = 1
+
+    print(totalWords,url)
+
+    if wordCounts["@mostWords"] < totalWords:
+        wordCounts["@mostWords"] = totalWords
+        wordCounts["@longestURL"] = url
+        print("NEW BIG PAGE")
+
+def fingerprint(strText):
+    pass
+
 
 
 def is_valid(url):
