@@ -2,7 +2,7 @@ import re
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from lxml import html
-import htmlParser
+from htmlParser import GoodTextParser
 
 uniqueDict = dict()
 
@@ -29,9 +29,8 @@ def extract_next_links(url, resp):
     return listOfLinks
 
 def getText(url,resp):
-    rawHtml = resp.raw_response.content #Gets the string of the entire html document
+    rawHtml =urlopen(url).read().decode("utf-8") #resp.raw_response.content #Gets the string of the entire html document
     # tags = re.compile(r"<script.*<\/script>")  
-    # noTagsString = re.sub(tags," ",rawHtml) #Scripts hold undesired data
     # tags = re.compile(r'<meta .*name="description".*content="')
     # noTagsString = re.sub(tags," ",noTagsString)
     # tags = re.compile(r"<.*>")      #Remove all tags
