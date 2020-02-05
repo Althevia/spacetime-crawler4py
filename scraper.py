@@ -15,7 +15,8 @@ def scraper(url, resp):
         return list()
     tokenize(url)
     links = extract_next_links(url, resp)
-    return [link for link in links if is_valid(link)]
+    return list()
+    #return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp):
     # Implementation requred.
@@ -41,7 +42,7 @@ def tokenize(url):
     # noTagsString = re.sub(tags," ",noTagsString)
     parser = GoodTextParser()
     parser.feed(rawHtml)
-    print(parser.keptText)
+    #print(parser.keptText)
 
     totalWords = 0
     #Stolen from Annie's assignment 1 (but modified)
