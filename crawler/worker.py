@@ -55,7 +55,7 @@ class Worker(Thread):
         index = 0
         while words != 50:
             if (not sortedWords[index] in stopWords):
-                if (words < 49)
+                if (words < 49):
                     print(sortedWords[index],end = ", ")
                 else:
                     print(sortedWords[index])

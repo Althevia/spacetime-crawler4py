@@ -31,6 +31,7 @@ def extract_next_links(url, resp):
         if uniqueURLs.get(defraggedLink) == None:
             uniqueURLs[defraggedLink] = 1
             listOfLinks.append(defraggedLink) #Add to list of links
+    uniqueURLs.sync()
     return listOfLinks
 
 def tokenize(url):
@@ -74,6 +75,7 @@ def tokenize(url):
         wordCounts["@mostWords"] = totalWords
         wordCounts["@longestURL"] = url
         print("NEW BIG PAGE")
+    wordCounts.sync()
 
 def fingerprint(strText):
     pass
