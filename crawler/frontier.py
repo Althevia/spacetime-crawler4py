@@ -34,12 +34,13 @@ class Frontier(object):
             if not self.save:
                 for url in self.config.seed_urls:
                     self.add_url(url)
-
+        '''
         if not os.path.exists(self.config.count_file):
             print("path exists")
             wordCounts = shelve.open(self.config.count_file)
             wordCounts["@mostWords"] = 0
             wordCounts.sync()
+        '''
 
     def _parse_save_file(self):
         ''' This function can be overridden for alternate saving techniques. '''

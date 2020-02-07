@@ -72,8 +72,10 @@ def tokenize(url):
             wordCounts[token] = 1
 
     print(totalWords,url)
-
-    if wordCounts["@mostWords"] < totalWords:
+    if wordCounts.get("@mostWords") == None:
+        wordCounts["@mostWords"] = totalWords
+        wordCounts["@longestURL"] = url
+    elif wordCounts["@mostWords"] < totalWords:
         wordCounts["@mostWords"] = totalWords
         wordCounts["@longestURL"] = url
         print("NEW BIG PAGE")
