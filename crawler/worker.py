@@ -31,10 +31,10 @@ class Worker(Thread):
             time.sleep(self.config.time_delay)
 
     def reportAnswers(self):
-        wordCounts = shelve.open("wordCounts.shelve")
-        uniqueURLs = shelve.open("uniqueURLs.shelve")
+        wordCounts = shelve.open(self.config.count_file)
+        #uniqueURLs = shelve.open("uniqueURLs.shelve")
         print("Page with most words:",wordCounts["@longestURL"],"\n\twith",wordCounts["@mostWords"],"words")
-        print("Number of unique pages:",len(uniqueURLs))
+        #print("Number of unique pages:",len(uniqueURLs))
 
         stopWords = ["a","about","above","after","again","against","all","am","an","and","any","are","aren't",
             "as","at","be","because","been","before","being","below","between","both","but","by","can't","cannot",
