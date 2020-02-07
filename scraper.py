@@ -49,22 +49,20 @@ def tokenize(url):
 
     totalWords = 0
     #Stolen from Annie's assignment 1 (but modified)
-    for line in parser.keptText:
-        print(line)
-        token = ""
-        for c in line:
-            numCode = ord(c)
-            if 91 > numCode > 64:    #Checks upper case letters
-                token += (c.lower())    #Converts upper to lower
-            elif 123 > numCode > 96 or 47 < numCode < 58 or numCode == 39:   #Checks lower case letters or numbers or '
-                token += c
-            elif token != "":
-                totalWords += 1
-                if wordCounts.get(token) != None:
-                    wordCounts[token] += 1
-                else:
-                    wordCounts[token] = 1
-                token = ""
+    token = ""
+    for c in parser.keptText:
+        numCode = ord(c)
+        if 91 > numCode > 64:    #Checks upper case letters
+            token += (c.lower())    #Converts upper to lower
+        elif 123 > numCode > 96 or 47 < numCode < 58 or numCode == 39:   #Checks lower case letters or numbers or '
+            token += c
+        elif token != "":
+            totalWords += 1
+            if wordCounts.get(token) != None:
+                wordCounts[token] += 1
+            else:
+                wordCounts[token] = 1
+            token = ""
     if token != "":
         totalWords += 1
         if wordCounts.get(token) != None:
