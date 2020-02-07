@@ -34,6 +34,7 @@ def extract_next_links(url, resp):
             uniqueURLs[defraggedLink] = 1
             listOfLinks.append(defraggedLink) #Add to list of links
     uniqueURLs.sync()
+    uniqueURLs.close()
     return listOfLinks
 
 def tokenize(url):
@@ -46,7 +47,7 @@ def tokenize(url):
     parser = GoodTextParser()
     parser.feed(rawHtml)
     #print(parser.keptText)
-
+    wordCounts = shelve.open("wordCounts.shelve")
     totalWords = 0
     #Stolen from Annie's assignment 1 (but modified)
     token = ""
@@ -79,6 +80,7 @@ def tokenize(url):
         wordCounts["@longestURL"] = url
         print("NEW BIG PAGE")
     wordCounts.sync()
+    wordCounts.close()
 
 def fingerprint(strText):
     pass
