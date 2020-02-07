@@ -31,6 +31,7 @@ class Worker(Thread):
             time.sleep(self.config.time_delay)
 
     def reportAnswers(self):
+        print(self.config.count_file)
         wordCounts = shelve.open(self.config.count_file)
         #uniqueURLs = shelve.open("uniqueURLs.shelve")
         print("Page with most words:",wordCounts["@longestURL"],"\n\twith",wordCounts["@mostWords"],"words")

@@ -50,6 +50,7 @@ def tokenize(url):
     totalWords = 0
     #Stolen from Annie's assignment 1 (but modified)
     for line in parser.keptText:
+        print(line)
         token = ""
         for c in line:
             numCode = ord(c)
