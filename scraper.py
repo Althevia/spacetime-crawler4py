@@ -4,6 +4,7 @@ from urllib.request import urlopen
 from lxml import html
 from htmlParser import GoodTextParser
 import shelve
+import hashlib
 
 
 # Load existing save file, or create one if it does not exist.
@@ -29,6 +30,7 @@ def extract_next_links(url, resp):
         fragLen = len(parsed.fragment)  #Remove the fragments
         defraggedLink = link[2][0:len(link[2])-fragLen]
         if uniqueURLs.get(defraggedLink) == None:
+            #Need to check for duplicates
             uniqueURLs[defraggedLink] = 1
             listOfLinks.append(defraggedLink) #Add to list of links
     uniqueURLs.sync()
@@ -57,17 +59,17 @@ def tokenize(url):
                 token += c
             elif token != "":
                 totalWords += 1
-                if wordCounts.get(word) != None:
-                    wordCounts[word] += 1
+                if wordCounts.get(token) != None:
+                    wordCounts[token] += 1
                 else:
-                    wordCounts[word] = 1
+                    wordCounts[token] = 1
                 token = ""
     if token != "":
         totalWords += 1
-        if wordCounts.get(word) != None:
-            wordCounts[word] += 1
+        if wordCounts.get(token) != None:
+            wordCounts[token] += 1
         else:
-            wordCounts[word] = 1
+            wordCounts[token] = 1
 
     print(totalWords,url)
 

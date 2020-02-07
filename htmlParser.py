@@ -8,6 +8,7 @@ class GoodTextParser(HTMLParser):
         self.keptText = ""
         self.currentTag = ""
 
+    #What to do when tag is found <.*>
     def handle_starttag(self, tag, attrs):
         tempStr = ""
         isDesc = False
@@ -20,6 +21,7 @@ class GoodTextParser(HTMLParser):
         if (isDesc):
             self.keptText += " " + tempStr
 
+    #What to do with info between tags <>.*<>
     def handle_data(self, data):
         if self.currentTag != "script":
             self.keptText += " " + data
