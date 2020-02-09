@@ -37,15 +37,14 @@ def extract_next_links(url, resp, uniqueURLs):
     return listOfLinks
 
 def tokenize(url, wordCounts, uniqueURLs):
-    rawHtml = resp.raw_response.content #Gets the string of the entire html document, in bytes?
-    stringDoc = html.fromstring(rawHtml)
+    rawHtml =urlopen(url).read().decode("utf-8")
     # tags = re.compile(r"<script.*<\/script>")  
     # tags = re.compile(r'<meta .*name="description".*content="')
     # noTagsString = re.sub(tags," ",noTagsString)
     # tags = re.compile(r"<.*>")      #Remove all tags
     # noTagsString = re.sub(tags," ",noTagsString)
     parser = GoodTextParser()
-    parser.feed(stringDoc)
+    parser.feed(rawHtml)
     #print(parser.keptText)
     #wordCounts = shelve.open("wordCounts.shelve")
     totalWords = 0
