@@ -6,6 +6,9 @@ from scraper import scraper
 import time
 import shelve
 
+wordCounts = shelve.open("wordCounts.shelve")
+uniqueURLs = shelve.open("uniqueURLs.shelve")
+
 class Worker(Thread):
     def __init__(self, worker_id, config, frontier):
         self.logger = get_logger(f"Worker-{worker_id}", "Worker")
@@ -24,20 +27,17 @@ class Worker(Thread):
             self.logger.info(
                 f"Downloaded {tbd_url}, status <{resp.status}>, "
                 f"using cache {self.config.cache_server}.")
-            scraped_urls = scraper(tbd_url, resp)
+            scraped_urls = scraper(tbd_url, resp, wordCounts, uniqueURLs)
             for scraped_url in scraped_urls:
                 self.frontier.add_url(scraped_url)
             self.frontier.mark_url_complete(tbd_url)
             time.sleep(self.config.time_delay)
 
     def reportAnswers(self):
-        print(self.config.count_file)
-        wordCounts = shelve.open(self.config.count_file)
-        uniqueURLs = shelve.open("uniqueURLs.shelve")
         #uniqueURLs = shelve.open("uniqueURLs.shelve")
         print("Page with most words:",uniqueURLs["@longestURL"],"\n\twith",wordCounts["@mostWords"],"words")
-        #print("Number of unique pages:",len(uniqueURLs))
-
+        print("Number of unique pages:",len(uniqueURLs))
+        print("Fifty most common words:")
         stopWords = ["a","about","above","after","again","against","all","am","an","and","any","are","aren't",
             "as","at","be","because","been","before","being","below","between","both","but","by","can't","cannot",
             "could","couldn't","did","didn't","do","does","doesn't","doing","don't","down","during","each",
@@ -58,9 +58,9 @@ class Worker(Thread):
         while words != 50:
             if (not sortedWords[index][0] in stopWords):
                 if (words < 49):
-                    print(sortedWords[index],end = ", ")
+                    print(sortedWords[index][0],end = ", ")
                 else:
-                    print(sortedWords[index])
+                    print(sortedWords[index][0])
                 words += 1
             index += 1
 

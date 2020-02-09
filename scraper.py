@@ -11,21 +11,21 @@ import hashlib
 #wordCounts = shelve.open("wordCounts.shelve")
 #uniqueURLs = shelve.open("uniqueURLs.shelve")
 
-def scraper(url, resp):
+def scraper(url, resp, wordCounts, uniqueURLs):
     if 399 < resp.status < 607:
         return list()
-    tokenize(url)
-    links = extract_next_links(url, resp)
+    tokenize(url, wordCounts, uniqueURLs)
+    links = extract_next_links(url, resp, uniqueURLs)
     return list()
     #return [link for link in links if is_valid(link)]
 
-def extract_next_links(url, resp):
+def extract_next_links(url, resp, uniqueURLs):
     # Implementation requred.
     rawHtml = resp.raw_response.content #Gets the string of the entire html document
     stringDoc = html.fromstring(rawHtml)
     linksList = list(stringDoc.iterlinks()) #List of tuples of link kind of objects
     listOfLinks = []
-    uniqueURLs = shelve.open("uniqueURLs.shelve")
+    #uniqueURLs = shelve.open("uniqueURLs.shelve")
     for link in linksList:
         parsed = urlparse(link[2])
         fragLen = len(parsed.fragment)  #Remove the fragments
@@ -34,11 +34,10 @@ def extract_next_links(url, resp):
             #Need to check for duplicates
             uniqueURLs[defraggedLink] = 1
             listOfLinks.append(defraggedLink) #Add to list of links
-    uniqueURLs.sync()
-    uniqueURLs.close()
+    #uniqueURLs.close()
     return listOfLinks
 
-def tokenize(url):
+def tokenize(url, wordCounts, uniqueURLs):
     rawHtml =urlopen(url).read().decode("utf-8") #resp.raw_response.content #Gets the string of the entire html document
     # tags = re.compile(r"<script.*<\/script>")  
     # tags = re.compile(r'<meta .*name="description".*content="')
@@ -48,7 +47,7 @@ def tokenize(url):
     parser = GoodTextParser()
     parser.feed(rawHtml)
     #print(parser.keptText)
-    wordCounts = shelve.open("wordCounts.shelve")
+    #wordCounts = shelve.open("wordCounts.shelve")
     totalWords = 0
     #Stolen from Annie's assignment 1 (but modified)
     token = ""
@@ -72,22 +71,18 @@ def tokenize(url):
         else:
             wordCounts[token] = 1
 
-    print(totalWords,url)
     if wordCounts.get("@mostWords") == None:
         wordCounts["@mostWords"] = totalWords
-        uniqueURLs = shelve.open("uniqueURLs.shelve")
+        #uniqueURLs = shelve.open("uniqueURLs.shelve")
         uniqueURLs["@longestURL"] = url
-        uniqueURLs.close()
-        #wordCounts["@longestURL"] = url
+        #uniqueURLs.close()
     elif wordCounts["@mostWords"] < totalWords:
         wordCounts["@mostWords"] = totalWords
-        uniqueURLs = shelve.open("uniqueURLs.shelve")
+        #uniqueURLs = shelve.open("uniqueURLs.shelve")
         uniqueURLs["@longestURL"] = url
-        uniqueURLs.close()
-        #wordCounts["@longestURL"] = url
+        #uniqueURLs.close()
         print("NEW BIG PAGE")
-    wordCounts.sync()
-    wordCounts.close()
+    #wordCounts.close()
 
 def fingerprint(strText):
     pass
