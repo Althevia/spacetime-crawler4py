@@ -37,14 +37,15 @@ def extract_next_links(url, resp, uniqueURLs):
     return listOfLinks
 
 def tokenize(url, wordCounts, uniqueURLs):
-    rawHtml = urlopen(url).read().decode("utf-8") #resp.raw_response.content #Gets the string of the entire html document
+    rawHtml = resp.raw_response.content #Gets the string of the entire html document, in bytes?
+    stringDoc = html.fromstring(rawHtml)
     # tags = re.compile(r"<script.*<\/script>")  
     # tags = re.compile(r'<meta .*name="description".*content="')
     # noTagsString = re.sub(tags," ",noTagsString)
     # tags = re.compile(r"<.*>")      #Remove all tags
     # noTagsString = re.sub(tags," ",noTagsString)
     parser = GoodTextParser()
-    parser.feed(rawHtml)
+    parser.feed(stringDoc)
     #print(parser.keptText)
     #wordCounts = shelve.open("wordCounts.shelve")
     totalWords = 0
@@ -93,6 +94,7 @@ def is_valid(url):
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
             return False
+        #Checks for right file types
         p = not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
@@ -101,7 +103,11 @@ def is_valid(url):
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower()) 
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
+
+        if "/pdf/" in url: 
+            return False
+
         #Checks for the right domains
         r = not not re.match(
             r"((.*\.|)ics\.uci\.edu)|"
