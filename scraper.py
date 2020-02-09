@@ -22,13 +22,12 @@ badPhrases = ["/pdf/",".pdf","/?ical=1","/calendar/","format=xml","replytocom","
 #     rp.read()
 #     rpList.append(rp)
 
-def scraper(url, resp, wordCounts, uniqueURLs, uniqueRobots):
+def scraper(url, resp, wordCounts, uniqueURLs):
     if 399 < resp.status < 609:
         return list()
     tokenize(url, wordCounts, uniqueURLs)
     links = extract_next_links(url, resp, uniqueURLs)
-    sitemaps =[]
-    return [link for link in links if is_valid(link, uniqueRobots, sitemaps)]
+    return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp, uniqueURLs):
     # Implementation requred.
@@ -91,7 +90,7 @@ def fingerprint(strText):
 
 
 
-def is_valid(url, uniqueRobots, sitemaps):
+def is_valid(url):
     try:   
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
@@ -133,10 +132,6 @@ def is_valid(url, uniqueRobots, sitemaps):
         rp.read()
         if rp.can_fetch("*",url) == False:
             return False
-        if uniqueRobots.get(robotPage) == None:
-            uniqueRobots[robotPage] = 1
-            for l in rp.site_maps():
-                
 
         if url[:-5] == "/feed" or url[:-6] == "/feed/":
             return False
