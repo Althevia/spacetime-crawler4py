@@ -1,0 +1,12 @@
+Page with most words (772): https://www.informatics.uci.edu
+Number of unique pages: 431
+Fifty most common words:
+computer, 0, important, research, information, s, science, department, uci, informatics, sciences, school, bren, series, statistics, donald, 2020, graduate, faculty, student, news, undergraduate, ics, seminar, students, width, events, none, policies, academic, uc, 2, professor, b, today, irvine, software, engineering, ph, height, d, img, university, read, 1em, slide, 1, degrees, job, support
+Number of unique URLs in the ics.uci.edu subdomain: 7
+https://ics.uci.edu, 36
+https://swiki.ics.uci.edu, 1
+https://calendar.ics.uci.edu, 1
+https://statconsulting.ics.uci.edu, 1
+https://mse.ics.uci.edu, 1
+https://mhcid.ics.uci.edu, 1
+https://intranet.ics.uci.edu, 1

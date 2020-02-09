@@ -5,6 +5,8 @@ from utils import get_logger
 from scraper import scraper
 import time
 import shelve
+import re
+from urllib.parse import urlparse
 
 wordCounts = shelve.open("wordCounts.shelve")
 uniqueURLs = shelve.open("uniqueURLs.shelve")
@@ -38,9 +40,10 @@ class Worker(Thread):
 
     def reportAnswers(self):
         #uniqueURLs = shelve.open("uniqueURLs.shelve")
-        print("Page with most words:",uniqueURLs["@longestURL"],"\n\twith",wordCounts["@mostWords"],"words")
-        print("Number of unique pages:",len(uniqueURLs)-1)
-        print("Fifty most common words:")
+        reportFile = open("report.txt", "w")
+        print("Page with most words ("+ str(wordCounts["@mostWords"]) + "): " + uniqueURLs["@longestURL"], file = reportFile)
+        print("Number of unique pages:",len(uniqueURLs)-1, file = reportFile)
+        print("Fifty most common words:", file = reportFile)
         stopWords = ["a","about","above","after","again","against","all","am","an","and","any","are","aren't",
             "as","at","be","because","been","before","being","below","between","both","but","by","can't","cannot",
             "could","couldn't","did","didn't","do","does","doesn't","doing","don't","down","during","each",
@@ -61,12 +64,28 @@ class Worker(Thread):
         while words != 50:
             if (not sortedWords[index][0] in stopWords):
                 if (words < 49):
-                    print(sortedWords[index][0],end = ", ")
+                    print(sortedWords[index][0],end = ", ", file = reportFile)
                 else:
-                    print(sortedWords[index][0])
+                    print(sortedWords[index][0], file = reportFile)
                 words += 1
             index += 1
-        wordCount.close()
+        #getting the subdomains of ics.uci.edu
+        urlSubDict = dict()
+        for url in uniqueURLs.keys():
+            if url != "@longestURL":
+                parse = urlparse(url)
+                netloc = parse.netloc.lower()
+                if netloc[:4] == "www.":
+                    netloc = netloc[4:]
+                if re.match(r"(.*\.|)ics\.uci\.edu", netloc) != None:
+                    if urlSubDict.get(netloc) == None:
+                        urlSubDict[netloc] = 1
+                    else:
+                        urlSubDict[netloc] += 1
+        print("Number of unique URLs in the ics.uci.edu subdomain: " + str(len(urlSubDict)), file = reportFile)
+        for key, value in urlSubDict.items():
+            print("https://" + key + ", " + str(value), file = reportFile)
+        wordCounts.close()
         uniqueURLs.close()
 
 

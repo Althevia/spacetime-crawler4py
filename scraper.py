@@ -18,7 +18,7 @@ blacklist = []
 robotTxts = ["https://www.ics.uci.edu/robots.txt","https://today.uci.edu/robots.txt","https://www.cs.uci.edu/robots.txt",
     "https://www.informatics.uci.edu/robots.txt","https://www.stat.uci.edu/robots.txt"]
 #Issues
-badPhrases = ["/pdf/",".pdf","/?ical=1","/calendar/","format=xml","replytocom","wp-json"]
+badPhrases = ["/pdf/",".pdf","/?ical=1","/calendar/","format=xml","replytocom","wp-json","?share=google-plus","?share=facebook","?share=twitter"]
 
 rpList = [] #List to hold robot parsers
 rp = urllib.robotparser.RobotFileParser()
@@ -50,7 +50,7 @@ def extract_next_links(url, resp, uniqueURLs):
             uniqueURLs[defraggedLink] = 1
             listOfLinks.append(defraggedLink) #Add to list of links
     #uniqueURLs.close()
-    return listOfLinks
+    return [] # listOfLinks
 
 def tokenize(url, wordCounts, uniqueURLs):
     try:
