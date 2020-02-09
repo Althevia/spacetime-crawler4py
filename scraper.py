@@ -5,7 +5,7 @@ from lxml import html
 from htmlParser import GoodTextParser
 import shelve
 import hashlib
-
+import urllib.robotparser
 
 # Load existing save file, or create one if it does not exist.
 #wordCounts = shelve.open("wordCounts.shelve")
@@ -14,9 +14,17 @@ import hashlib
 #Pages to avoid, due to traps or other reasons
 blacklist = []
 #Robots.txt disallows
-robot = ["https://www.ics.uci.edu/~mpufal/","https://www.ics.uci.edu/bin/"]
+#disA = ["https://www.ics.uci.edu/~mpufal/","https://www.ics.uci.edu/bin/"]
+robotTxts = ["https://www.ics.uci.edu/robots.txt","https://today.uci.edu/robots.txt","https://www.cs.uci.edu/robots.txt",
+    "https://www.informatics.uci.edu/robots.txt","https://www.stat.uci.edu/robots.txt"]
 #Issues
 badPhrases = ["/pdf/",".pdf","/?ical=1","/calendar/","format=xml","replytocom"]
+
+rpList = [] #List to hold robot parsers
+rp = urllib.robotparser.RobotFileParser()
+for r in robotTxts:
+    rp.set_url(r)
+    rp.read()
 
 def scraper(url, resp, wordCounts, uniqueURLs):
     if 399 < resp.status < 609:
@@ -129,8 +137,8 @@ def is_valid(url):
         for l in blacklist:
             if l in url:
                 return False
-        for l in robot:
-            if l in url:
+        for rp in rpList:
+            if rp.can_fetch("*",url) == False:
                 return False
 
         return True
