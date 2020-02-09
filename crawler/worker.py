@@ -36,7 +36,7 @@ class Worker(Thread):
     def reportAnswers(self):
         #uniqueURLs = shelve.open("uniqueURLs.shelve")
         print("Page with most words:",uniqueURLs["@longestURL"],"\n\twith",wordCounts["@mostWords"],"words")
-        print("Number of unique pages:",len(uniqueURLs))
+        print("Number of unique pages:",len(uniqueURLs)-1)
         print("Fifty most common words:")
         stopWords = ["a","about","above","after","again","against","all","am","an","and","any","are","aren't",
             "as","at","be","because","been","before","being","below","between","both","but","by","can't","cannot",
@@ -63,6 +63,8 @@ class Worker(Thread):
                     print(sortedWords[index][0])
                 words += 1
             index += 1
+        wordCount.close()
+        uniqueURLs.close()
 
 
 
