@@ -18,19 +18,21 @@ blacklist = []
 robotTxts = ["https://www.ics.uci.edu/robots.txt","https://today.uci.edu/robots.txt","https://www.cs.uci.edu/robots.txt",
     "https://www.informatics.uci.edu/robots.txt","https://www.stat.uci.edu/robots.txt"]
 #Issues
-badPhrases = ["/pdf/",".pdf","/?ical=1","/calendar/","format=xml","replytocom"]
+badPhrases = ["/pdf/",".pdf","/?ical=1","/calendar/","format=xml","replytocom","wp-json"]
 
 rpList = [] #List to hold robot parsers
 rp = urllib.robotparser.RobotFileParser()
 for r in robotTxts:
     rp.set_url(r)
     rp.read()
+    rpList.append(rp)
 
 def scraper(url, resp, wordCounts, uniqueURLs):
     if 399 < resp.status < 609:
         return list()
     tokenize(url, wordCounts, uniqueURLs)
     links = extract_next_links(url, resp, uniqueURLs)
+
     return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp, uniqueURLs):
@@ -39,7 +41,6 @@ def extract_next_links(url, resp, uniqueURLs):
     stringDoc = html.fromstring(rawHtml)
     linksList = list(stringDoc.iterlinks()) #List of tuples of link kind of objects
     listOfLinks = []
-    #uniqueURLs = shelve.open("uniqueURLs.shelve")
     for link in linksList:
         parsed = urlparse(link[2])
         fragLen = len(parsed.fragment)  #Remove the fragments
@@ -60,7 +61,6 @@ def tokenize(url, wordCounts, uniqueURLs):
         print("Exception caught in tokenize. Bad html content")
         return
     #print(parser.keptText)
-    #wordCounts = shelve.open("wordCounts.shelve")
     totalWords = 0
     #Stolen from Annie's assignment 1 (but modified)
     token = ""
@@ -86,16 +86,11 @@ def tokenize(url, wordCounts, uniqueURLs):
 
     if wordCounts.get("@mostWords") == None:
         wordCounts["@mostWords"] = totalWords
-        #uniqueURLs = shelve.open("uniqueURLs.shelve")
         uniqueURLs["@longestURL"] = url
-        #uniqueURLs.close()
     elif wordCounts["@mostWords"] < totalWords:
         wordCounts["@mostWords"] = totalWords
-        #uniqueURLs = shelve.open("uniqueURLs.shelve")
         uniqueURLs["@longestURL"] = url
-        #uniqueURLs.close()
         print("NEW BIG PAGE")
-    #wordCounts.close()
 
 def fingerprint(strText):
     pass
