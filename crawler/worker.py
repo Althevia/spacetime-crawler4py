@@ -34,7 +34,7 @@ class Worker(Thread):
                 for scraped_url in scraped_urls:
                     self.frontier.add_url(scraped_url)
             except:
-                print("Timeout error (5 seconds)")
+                print("Timeout error (5 seconds):",tbd_url)
             self.frontier.mark_url_complete(tbd_url)
             time.sleep(self.config.time_delay)
 
