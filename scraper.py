@@ -11,7 +11,8 @@ import hashlib
 #wordCounts = shelve.open("wordCounts.shelve")
 #uniqueURLs = shelve.open("uniqueURLs.shelve")
 
-blacklist = ["https://evoke.ics.uci.edu/hollowing-i-in-the-authorship-of-letters-a-note-on-flusser-and-surveillance"]
+blacklist = ["https://evoke.ics.uci.edu/hollowing-i-in-the-authorship-of-letters-a-note-on-flusser-and-surveillance/?replytocom"]
+badPhrases = ["/pdf/",".pdf","/?ical=1","/calendar/","format=xml"]
 
 def scraper(url, resp, wordCounts, uniqueURLs):
     if 399 < resp.status < 609:
@@ -118,8 +119,9 @@ def is_valid(url):
             return False
 
         #Removes hidden pdfs
-        if "/pdf/" in url or ".pdf" in url: 
-            return False
+        for phrase in badPhrases:
+            if phrase in url:
+                return False
 
         for l in blacklist:
             if l in url:
