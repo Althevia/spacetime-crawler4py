@@ -11,6 +11,8 @@ import hashlib
 #wordCounts = shelve.open("wordCounts.shelve")
 #uniqueURLs = shelve.open("uniqueURLs.shelve")
 
+blacklist = ["https://evoke.ics.uci.edu/hollowing-i-in-the-authorship-of-letters-a-note-on-flusser-and-surveillance"]
+
 def scraper(url, resp, wordCounts, uniqueURLs):
     if 399 < resp.status < 609:
         return list()
@@ -102,8 +104,7 @@ def is_valid(url):
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
-
-        if "/pdf/" in url or ".pdf" in url: 
+        if not p:
             return False
 
         #Checks for the right domains
@@ -113,7 +114,18 @@ def is_valid(url):
             + r"((.*\.|)informatics\.uci\.edu)|"
             + r"((.*\.|)stat\.uci\.edu)|"
             + r"((www\.|)today\.uci\.edu\/department\/information_computer_sciences)",parsed.netloc.lower())
-        return p and r
+        if not r:
+            return False
+
+        #Removes hidden pdfs
+        if "/pdf/" in url or ".pdf" in url: 
+            return False
+
+        for l in blacklist:
+            if l in url:
+                return False
+
+        return True
     except TypeError:
         print ("TypeError for ", parsed)
         raise
