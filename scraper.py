@@ -8,7 +8,7 @@ import hashlib
 import urllib.robotparser
 
 #Pages to avoid, due to traps or other reasons
-blacklist = ["https://wics.ics.uci.edu/events/category/wics-meeting"]
+blacklist = ["https://wics.ics.uci.edu/events/"]
 #Robots.txt disallows
 # robotTxts = ["https://www.ics.uci.edu/robots.txt","https://today.uci.edu/robots.txt","https://www.cs.uci.edu/robots.txt",
 #     "https://www.informatics.uci.edu/robots.txt","https://www.stat.uci.edu/robots.txt"]
