@@ -7,32 +7,28 @@ import shelve
 import hashlib
 import urllib.robotparser
 
-# Load existing save file, or create one if it does not exist.
-#wordCounts = shelve.open("wordCounts.shelve")
-#uniqueURLs = shelve.open("uniqueURLs.shelve")
-
 #Pages to avoid, due to traps or other reasons
-blacklist = []
+blacklist = ["https://wics.ics.uci.edu/events/category/wics-meeting"]
 #Robots.txt disallows
-#disA = ["https://www.ics.uci.edu/~mpufal/","https://www.ics.uci.edu/bin/"]
-robotTxts = ["https://www.ics.uci.edu/robots.txt","https://today.uci.edu/robots.txt","https://www.cs.uci.edu/robots.txt",
-    "https://www.informatics.uci.edu/robots.txt","https://www.stat.uci.edu/robots.txt"]
+# robotTxts = ["https://www.ics.uci.edu/robots.txt","https://today.uci.edu/robots.txt","https://www.cs.uci.edu/robots.txt",
+#     "https://www.informatics.uci.edu/robots.txt","https://www.stat.uci.edu/robots.txt"]
 #Issues
 badPhrases = ["/pdf/",".pdf","/?ical=1","/calendar/","format=xml","replytocom","wp-json","?share=google-plus","?share=facebook","?share=twitter"]
 
-rpList = [] #List to hold robot parsers
-rp = urllib.robotparser.RobotFileParser()
-for r in robotTxts:
-    rp.set_url(r)
-    rp.read()
-    rpList.append(rp)
+# rpList = [] #List to hold robot parsers
+# rp = urllib.robotparser.RobotFileParser()
+# for r in robotTxts:
+#     rp.set_url(r)
+#     rp.read()
+#     rpList.append(rp)
 
-def scraper(url, resp, wordCounts, uniqueURLs):
+def scraper(url, resp, wordCounts, uniqueURLs, uniqueRobots):
     if 399 < resp.status < 609:
         return list()
     tokenize(url, wordCounts, uniqueURLs)
     links = extract_next_links(url, resp, uniqueURLs)
-    return [link for link in links if is_valid(link)]
+    sitemaps =[]
+    return [link for link in links if is_valid(link, uniqueRobots, sitemaps)]
 
 def extract_next_links(url, resp, uniqueURLs):
     # Implementation requred.
@@ -95,7 +91,7 @@ def fingerprint(strText):
 
 
 
-def is_valid(url):
+def is_valid(url, uniqueRobots, sitemaps):
     try:   
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
@@ -130,9 +126,17 @@ def is_valid(url):
         for l in blacklist:
             if l in url:
                 return False
-        for rp in rpList:
-            if rp.can_fetch("*",url) == False:
-                return False
+
+        #Reads robots.txt to check for disallows
+        robotPage = parsed.scheme + "://" + parsed.netloc.lower() + "/robots.txt"
+        rp = rp.set_url(robotPage)
+        rp.read()
+        if rp.can_fetch("*",url) == False:
+            return False
+        if uniqueRobots.get(robotPage) == None:
+            uniqueRobots[robotPage] = 1
+            for l in rp.site_maps():
+                
 
         if url[:-5] == "/feed" or url[:-6] == "/feed/":
             return False

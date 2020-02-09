@@ -23,5 +23,5 @@ class GoodTextParser(HTMLParser):
 
     #What to do with info between tags <>.*<>
     def handle_data(self, data):
-        if self.currentTag != "script":
+        if self.currentTag != "script" and self.currentTag != "style":
             self.keptText += " " + data
