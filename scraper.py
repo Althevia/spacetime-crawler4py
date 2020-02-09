@@ -134,6 +134,9 @@ def is_valid(url):
             if rp.can_fetch("*",url) == False:
                 return False
 
+        if url[:-5] == "/feed" or url[:-6] == "/feed/":
+            return False
+
         return True
     except TypeError:
         print ("TypeError for ", parsed)
