@@ -128,6 +128,7 @@ def is_valid(url):
 
         #Reads robots.txt to check for disallows
         robotPage = parsed.scheme + "://" + parsed.netloc.lower() + "/robots.txt"
+        rp = urllib.robotparser.RobotFileParser()
         rp = rp.set_url(robotPage)
         rp.read()
         if rp.can_fetch("*",url) == False:
