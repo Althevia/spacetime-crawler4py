@@ -14,10 +14,9 @@ import hashlib
 def scraper(url, resp, wordCounts, uniqueURLs):
     if 399 < resp.status < 607:
         return list()
-    tokenize(url, wordCounts, uniqueURLs)
+    tokenize(url, resp, wordCounts, uniqueURLs)
     links = extract_next_links(url, resp, uniqueURLs)
-    return list()
-    #return [link for link in links if is_valid(link)]
+    return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp, uniqueURLs):
     # Implementation requred.
@@ -37,8 +36,8 @@ def extract_next_links(url, resp, uniqueURLs):
     #uniqueURLs.close()
     return listOfLinks
 
-def tokenize(url, wordCounts, uniqueURLs):
-    rawHtml =urlopen(url).read().decode("utf-8") #resp.raw_response.content #Gets the string of the entire html document
+def tokenize(url, resp, wordCounts, uniqueURLs):
+    rawHtml = resp.raw_response.content.decode("utf-8") #resp.raw_response.content #Gets the string of the entire html document
     # tags = re.compile(r"<script.*<\/script>")  
     # tags = re.compile(r'<meta .*name="description".*content="')
     # noTagsString = re.sub(tags," ",noTagsString)
