@@ -8,8 +8,8 @@ import hashlib
 
 
 # Load existing save file, or create one if it does not exist.
-wordCounts = shelve.open("wordCounts.shelve")
-uniqueURLs = shelve.open("uniqueURLs.shelve")
+#wordCounts = shelve.open("wordCounts.shelve")
+#uniqueURLs = shelve.open("uniqueURLs.shelve")
 
 def scraper(url, resp):
     if 399 < resp.status < 607:
@@ -25,6 +25,7 @@ def extract_next_links(url, resp):
     stringDoc = html.fromstring(rawHtml)
     linksList = list(stringDoc.iterlinks()) #List of tuples of link kind of objects
     listOfLinks = []
+    uniqueURLs = shelve.open("uniqueURLs.shelve")
     for link in linksList:
         parsed = urlparse(link[2])
         fragLen = len(parsed.fragment)  #Remove the fragments
@@ -74,10 +75,16 @@ def tokenize(url):
     print(totalWords,url)
     if wordCounts.get("@mostWords") == None:
         wordCounts["@mostWords"] = totalWords
-        wordCounts["@longestURL"] = url
+        uniqueURLs = shelve.open("uniqueURLs.shelve")
+        uniqueURLs["@longestURL"] = url
+        uniqueURLs.close()
+        #wordCounts["@longestURL"] = url
     elif wordCounts["@mostWords"] < totalWords:
         wordCounts["@mostWords"] = totalWords
-        wordCounts["@longestURL"] = url
+        uniqueURLs = shelve.open("uniqueURLs.shelve")
+        uniqueURLs["@longestURL"] = url
+        uniqueURLs.close()
+        #wordCounts["@longestURL"] = url
         print("NEW BIG PAGE")
     wordCounts.sync()
     wordCounts.close()

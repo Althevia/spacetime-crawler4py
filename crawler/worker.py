@@ -33,8 +33,9 @@ class Worker(Thread):
     def reportAnswers(self):
         print(self.config.count_file)
         wordCounts = shelve.open(self.config.count_file)
+        uniqueURLs = shelve.open("uniqueURLs.shelve")
         #uniqueURLs = shelve.open("uniqueURLs.shelve")
-        print("Page with most words:",wordCounts["@longestURL"],"\n\twith",wordCounts["@mostWords"],"words")
+        print("Page with most words:",uniqueURLs["@longestURL"],"\n\twith",wordCounts["@mostWords"],"words")
         #print("Number of unique pages:",len(uniqueURLs))
 
         stopWords = ["a","about","above","after","again","against","all","am","an","and","any","are","aren't",
@@ -50,12 +51,12 @@ class Worker(Thread):
             "too","under","until","up","very","was","wasn't","we","we'd","we'll","we're","we've","were","weren't",
             "what","what's","when","when's","where","where's","which","while","who","who's","whom","why","why's",
             "with","won't","would","wouldn't","you","you'd","you'll","you're","you've","your","yours","yourself",
-            "yourselves"]
+            "yourselves","@mostWords"]
         words = 0
-        sortedWords = sorted(wordCounts.items(),key=(lambda x: -x[1]))
+        sortedWords = sorted(wordCounts.items(),key=(lambda x: -x[1])) 
         index = 0
         while words != 50:
-            if (not sortedWords[index] in stopWords):
+            if (not sortedWords[index][0] in stopWords):
                 if (words < 49):
                     print(sortedWords[index],end = ", ")
                 else:
