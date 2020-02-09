@@ -32,7 +32,6 @@ def scraper(url, resp, wordCounts, uniqueURLs):
         return list()
     tokenize(url, wordCounts, uniqueURLs)
     links = extract_next_links(url, resp, uniqueURLs)
-
     return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp, uniqueURLs):
@@ -49,8 +48,7 @@ def extract_next_links(url, resp, uniqueURLs):
             #Need to check for duplicates
             uniqueURLs[defraggedLink] = 1
             listOfLinks.append(defraggedLink) #Add to list of links
-    #uniqueURLs.close()
-    return [] # listOfLinks
+    return listOfLinks
 
 def tokenize(url, wordCounts, uniqueURLs):
     try:

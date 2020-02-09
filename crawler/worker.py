@@ -83,7 +83,7 @@ class Worker(Thread):
                     else:
                         urlSubDict[netloc] += 1
         print("Number of unique URLs in the ics.uci.edu subdomain: " + str(len(urlSubDict)), file = reportFile)
-        for key, value in urlSubDict.items():
+        for key, value in sorted(urlSubDict.items()):
             print("https://" + key + ", " + str(value), file = reportFile)
         wordCounts.close()
         uniqueURLs.close()
