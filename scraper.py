@@ -12,7 +12,7 @@ import hashlib
 #uniqueURLs = shelve.open("uniqueURLs.shelve")
 
 def scraper(url, resp, wordCounts, uniqueURLs):
-    if 399 < resp.status < 607:
+    if 399 < resp.status < 609:
         return list()
     tokenize(url, wordCounts, uniqueURLs)
     links = extract_next_links(url, resp, uniqueURLs)
