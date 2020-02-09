@@ -37,14 +37,13 @@ def extract_next_links(url, resp, uniqueURLs):
     return listOfLinks
 
 def tokenize(url, wordCounts, uniqueURLs):
-    rawHtml =urlopen(url).read().decode("utf-8")
-    # tags = re.compile(r"<script.*<\/script>")  
-    # tags = re.compile(r'<meta .*name="description".*content="')
-    # noTagsString = re.sub(tags," ",noTagsString)
-    # tags = re.compile(r"<.*>")      #Remove all tags
-    # noTagsString = re.sub(tags," ",noTagsString)
-    parser = GoodTextParser()
-    parser.feed(rawHtml)
+    try:
+        rawHtml =urlopen(url).read().decode("utf-8")
+        parser = GoodTextParser()
+        parser.feed(rawHtml)
+    except:
+        print("Exception caught in tokenize. Bad html content")
+        return
     #print(parser.keptText)
     #wordCounts = shelve.open("wordCounts.shelve")
     totalWords = 0
@@ -104,7 +103,7 @@ def is_valid(url):
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
 
-        if "/pdf/" in url: 
+        if "/pdf/" in url or ".pdf" in url: 
             return False
 
         #Checks for the right domains
