@@ -130,9 +130,10 @@ def is_valid(url):
         robotPage = parsed.scheme + "://" + parsed.netloc.lower() + "/robots.txt"
         rp = urllib.robotparser.RobotFileParser()
         rp = rp.set_url(robotPage)
-        rp.read()
-        if rp.can_fetch("*",url) == False:
-            return False
+        if rp != None:
+            rp.read()
+            if rp.can_fetch("*",url) == False:
+                return False
 
         if url[:-5] == "/feed" or url[:-6] == "/feed/":
             return False
