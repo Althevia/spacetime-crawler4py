@@ -1,6 +1,9 @@
 from utils import get_logger
 from crawler.frontier import Frontier
 from crawler.worker import Worker
+from urllib.parse import urlparse
+import re
+import shelve
 
 wordCounts = shelve.open("wordCounts.shelve")
 uniqueURLs = shelve.open("uniqueURLs.shelve")
