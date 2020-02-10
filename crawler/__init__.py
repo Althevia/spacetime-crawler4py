@@ -21,6 +21,8 @@ class Crawler(object):
             self.worker_factory(worker_id, self.config, self.frontier,wordCounts,uniqueURLs)
             for worker_id in range(self.config.threads_count)]
         for worker in self.workers:
+            worker.addInfo(wordCounts,uniqueURLs,self.workers)
+        for worker in self.workers:
             worker.start()
 
     def start(self):
