@@ -22,17 +22,26 @@ class Worker(Thread):
         
     def run(self):
         while True:
-            if len(myBackupList) == 0:
+            if len(self.myBackupList) == 0:
                 #No more worker urls, search frontier
                 tbd_url = self.frontier.get_tbd_url()
-                wID = urlID(tbd_url)
-                if wID != self.worker_id:
-                    #Not my url, give to someone else
-                    self.workers[wID].addToMine(tbd_url)
+                if not tbd_url:
+                    self.logger.info("Frontier is empty. Stopping Crawler.")
+                    checkAll = False
+                    for worker in self.workers:
+                        if len(worker.myBackupList) != 0:
+                            checkAll = True
+                    if checkAll == False:
+                        break
                 else:
-                    myBackupList.append(tbd_url)
+                    wID = self.urlID(tbd_url)
+                    if wID != self.worker_id:
+                        #Not my url, give to someone else
+                        self.workers[wID].addToMine(tbd_url)
+                    else:
+                        self.myBackupList.append(tbd_url)
             else:
-                tbd_url = myBackupList.pop(len(myBackupList)-1) #Take url belonging to this worker
+                tbd_url = self.myBackupList.pop(len(self.myBackupList)-1) #Take url belonging to this worker
                 try:
                     resp = download(tbd_url, self.config, self.logger)
                     self.logger.info(
@@ -56,7 +65,9 @@ class Worker(Thread):
         netloc = parse.netloc.lower()
         if netloc[:4] == "www.":
             netloc = netloc[4:]
-        wID = (chr(netloc[0]) - 97) % len(self.workers)
+        
+        wID = (ord(netloc[0]) - 97)
+        wID = wID % len(self.workers)
         return wID
 
     def addToMine(self,url):
