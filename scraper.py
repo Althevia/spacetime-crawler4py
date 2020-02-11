@@ -6,7 +6,10 @@ from htmlParser import GoodTextParser
 import shelve
 import hashlib
 import urllib.robotparser
-from utils.download import download
+import requests
+import cbor
+import time
+from utils.response import Response
 
 #Pages to avoid, due to traps or other reasons
 blacklist = ["https://wics.ics.uci.edu/events/","https://www.ics.uci.edu/~eppstein/pix/chron.html"]
@@ -127,30 +130,41 @@ def is_valid(url, uniqueURLs):
         for l in blacklist:
             if l in url:
                 return False
-
-        #Reads robots.txt to check for disallows
-        robotPage = parsed.scheme + "://" + parsed.netloc.lower() + "/robots.txt"
-        print("gotRobotPage")
-        if rpDict.get(robotPage) == None:
-            time.sleep(uniqueURLs["@config"].time_delay)
-            rResp = download(robotPage,uniqueURLs["@config"])
-            print("downloaded robotpage")
-            if not (399 < rResp.status < 609):
-                rString = rResp.raw_response.content.decode()
-                linesList = rString.split("\n")
-                rp = urllib.robotparser.RobotFileParser()
-                rp.parse(linesList)
-                rpDict[robotPage] = rp
-                print("put in robot dict")
-        else:
-            print("getting page from dict")
-            rp = rpDict.get(robotPage)
-        if rp != None:
-            print("try to fetch")
-            if rp.can_fetch("*",url) == False:
-                print("can fetch")
-                return False
-        print("it's none!")
+        try:
+            #Reads robots.txt to check for disallows
+            robotPage = parsed.scheme + "://" + parsed.netloc.lower() + "/robots.txt"
+            print("gotRobotPage")
+            if rpDict.get(robotPage) == None:
+                time.sleep(uniqueURLs["@config"].time_delay)
+                host, port = uniqueURLs["@config"].cache_server
+                resp = requests.get(
+                    f"http://{host}:{port}/",
+                    params=[("q", f"{robotPage}"), ("u", f"{uniqueURLs["@config"].user_agent}")],timeout=5)
+                if resp:
+                    rResp = Response(cbor.loads(resp.content))
+                rResp = Response({
+                    "error": f"Spacetime Response error {resp} with url {robotPage}.",
+                    "status": resp.status_code,
+                    "url": robotPage})
+                print("downloaded robotpage")
+                if not (399 < rResp.status < 609):
+                    rString = rResp.raw_response.content.decode()
+                    linesList = rString.split("\n")
+                    rp = urllib.robotparser.RobotFileParser()
+                    rp.parse(linesList)
+                    rpDict[robotPage] = rp
+                    print("put in robot dict")
+            else:
+                print("getting page from dict")
+                rp = rpDict.get(robotPage)
+            if rp != None:
+                print("try to fetch")
+                if rp.can_fetch("*",url) == False:
+                    print("can fetch")
+                    return False
+            print("it's none!")
+        except:
+            print("Timeout error (5 seconds):",robotPage)
 
         if url[-5:] == "/feed" or url[-6:] == "/feed/":
             return False
