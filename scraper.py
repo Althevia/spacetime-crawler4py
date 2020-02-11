@@ -36,11 +36,12 @@ def extract_next_links(url, resp, uniqueURLs):
         parsed = urlparse(link[2])
         fragLen = len(parsed.fragment)  #Remove the fragments
         defraggedLink = link[2][0:len(link[2])-fragLen]
+        defraggedLink.rstrip("/")
         if uniqueURLs.get(defraggedLink) == None:
             #Need to check for duplicates
             uniqueURLs[defraggedLink] = 1
             listOfLinks.append(defraggedLink) #Add to list of links
-    return listOfLinks
+    return [] #listOfLinks
 
 def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
     try:

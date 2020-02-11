@@ -86,3 +86,4 @@ class Crawler(object):
             print("https://" + key + ", " + str(value), file = reportFile)
         wordCounts.close()
         uniqueURLs.close()
+        uniqueFP.close()
