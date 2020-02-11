@@ -133,36 +133,31 @@ def is_valid(url, uniqueURLs):
         try:
             #Reads robots.txt to check for disallows
             robotPage = parsed.scheme + "://" + parsed.netloc.lower() + "/robots.txt"
-            print("gotRobotPage")
+            config = uniqueURLs["@config"]
             if rpDict.get(robotPage) == None:
-                time.sleep(uniqueURLs["@config"].time_delay)
-                host, port = uniqueURLs["@config"].cache_server
+                time.sleep(config.time_delay)
+                host, port = config.cache_server
                 resp = requests.get(
                     f"http://{host}:{port}/",
-                    params=[("q", f"{robotPage}"), ("u", f"{uniqueURLs["@config"].user_agent}")],timeout=5)
+                    params=[("q", f"{robotPage}"), ("u", f"{config.user_agent}")],timeout=5)
                 if resp:
                     rResp = Response(cbor.loads(resp.content))
-                rResp = Response({
-                    "error": f"Spacetime Response error {resp} with url {robotPage}.",
-                    "status": resp.status_code,
-                    "url": robotPage})
-                print("downloaded robotpage")
+                else:
+                    rResp = Response({
+                        "error": f"Spacetime Response error {resp} with url {robotPage}.",
+                        "status": resp.status_code,
+                        "url": robotPage})
                 if not (399 < rResp.status < 609):
-                    rString = rResp.raw_response.content.decode()
+                    rString = rResp.raw_response.content.decode("utf-8")
                     linesList = rString.split("\n")
                     rp = urllib.robotparser.RobotFileParser()
                     rp.parse(linesList)
                     rpDict[robotPage] = rp
-                    print("put in robot dict")
             else:
-                print("getting page from dict")
                 rp = rpDict.get(robotPage)
             if rp != None:
-                print("try to fetch")
                 if rp.can_fetch("*",url) == False:
-                    print("can fetch")
                     return False
-            print("it's none!")
         except:
             print("Timeout error (5 seconds):",robotPage)
 

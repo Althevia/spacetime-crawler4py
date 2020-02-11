@@ -30,9 +30,12 @@ class Worker(Thread):
                     checkAll = False
                     for worker in self.workers:
                         if len(worker.myBackupList) != 0:
+                            print(worker.worker_id)
                             checkAll = True
                     if checkAll == False:
+                        print(self.worker_id, "is leaving!")
                         break
+                    time.sleep(2)
                 else:
                     wID = self.urlID(tbd_url)
                     if wID != self.worker_id:
@@ -69,11 +72,7 @@ class Worker(Thread):
             if r == None:
                 r = re.match(r"((.*\.|)informatics\.uci\.edu)",parsed.netloc.lower())
                 if r == None:
-                    r = re.match(r"((.*\.|)stat\.uci\.edu)",parsed.netloc.lower())
-                    if r == None:
-                        wID = 4
-                    else:
-                        wID = 3
+                    wID = 3
                 else:
                     wID = 2
             else:
