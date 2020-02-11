@@ -30,14 +30,14 @@ class Worker(Thread):
                     checkAll = False
                     for worker in self.workers:
                         if len(worker.myBackupList) != 0:
-                            #print(worker.worker_id, "is still running")
+                            #Some worker is still running
                             checkAll = True
                         if checkAll == False:
                             time.sleep(3)
                     if checkAll == False:
                         for worker in self.workers:
                             if len(worker.myBackupList) != 0:
-                                #print(worker.worker_id, "is still running")
+                                #Some worker is still running! :O
                                 checkAll = True
                             if checkAll != True:
                                 time.sleep(3)
@@ -61,7 +61,8 @@ class Worker(Thread):
                     for scraped_url in scraped_urls:
                         self.frontier.add_url(scraped_url)
                 except:
-                    print("Timeout error (5 seconds):",tbd_url)
+                    #print("Timeout error (5 seconds):",tbd_url)
+                    pass
                 self.frontier.mark_url_complete(tbd_url)
                 time.sleep(self.config.time_delay)
 

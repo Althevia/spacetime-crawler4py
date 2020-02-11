@@ -36,6 +36,7 @@ def extract_next_links(url, resp, uniqueURLs):
         parsed = urlparse(link[2])
         fragLen = len(parsed.fragment)  #Remove the fragments
         defraggedLink = link[2][0:len(link[2])-fragLen]
+        defraggedLink.rstrip("/")
         if uniqueURLs.get(defraggedLink) == None:
             #Need to check for duplicates
             uniqueURLs[defraggedLink] = 1
@@ -48,11 +49,11 @@ def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
         parser = GoodTextParser()
         parser.feed(rawHtml)
     except:
-        print("Exception caught in tokenize. Bad html content")
+        #print("Exception caught in tokenize. Bad html content")
         return
     wordDict = dict()   #Local var to keep count of words
-    #print(parser.keptText)
     totalWords = 0
+
     #Stolen from Annie's assignment 1 (but modified)
     token = ""
     for c in parser.keptText:
@@ -80,7 +81,7 @@ def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
     for word in uniqueFP.keys():
         if similarity(fingerprint, word) > threshold:
             isGoodFP = False
-            print("is duplicate:", url)
+            #Is a duplicate
             break
     if isGoodFP:
         uniqueFP[fingerprint] = "1"
@@ -95,7 +96,7 @@ def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
         elif wordCounts["@mostWords"] < totalWords:
             wordCounts["@mostWords"] = totalWords
             uniqueURLs["@longestURL"] = url
-            print("NEW BIG PAGE")
+            #New big page found
 
 def simhash(wordDict):
     fp = [0]*384
@@ -195,7 +196,8 @@ def is_valid(url, uniqueURLs):
                 if rp.can_fetch("*",url) == False:
                     return False
         except:
-            print("Timeout error (5 seconds):",robotPage)
+            #print("Timeout error (5 seconds):",robotPage)
+            pass
 
         if url[-5:] == "/feed" or url[-6:] == "/feed/":
             return False

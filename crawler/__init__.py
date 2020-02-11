@@ -34,7 +34,6 @@ class Crawler(object):
     def join(self):
         for worker in self.workers:
             worker.join()
-        print("reporting answers!")
         self.reportAnswers()
 
     def reportAnswers(self):
