@@ -15,6 +15,7 @@ class Worker(Thread):
         self.frontier = frontier
         self.wordCounts = 0
         self.uniqueURLs = 0
+        self.uniqueFP = 0
         self.workers = 0    #All the workers
         self.myBackupList= list()      #List of urls belonging to this worker
         self.worker_id = worker_id
@@ -56,7 +57,7 @@ class Worker(Thread):
                     self.logger.info(
                         f"Downloaded {tbd_url}, status <{resp.status}>, "
                         f"using cache {self.config.cache_server}.")
-                    scraped_urls = scraper(tbd_url, resp, self.wordCounts, self.uniqueURLs)
+                    scraped_urls = scraper(tbd_url, resp, self.wordCounts, self.uniqueURLs, self.uniqueFP)
                     for scraped_url in scraped_urls:
                         self.frontier.add_url(scraped_url)
                 except:
@@ -64,9 +65,10 @@ class Worker(Thread):
                 self.frontier.mark_url_complete(tbd_url)
                 time.sleep(self.config.time_delay)
 
-    def addInfo(self,wordCounts,uniqueURLs,workers):
+    def addInfo(self,wordCounts,uniqueURLs,uniqueFP,workers):
         self.wordCounts = wordCounts
         self.uniqueURLs = uniqueURLs
+        self.uniqueFP = uniqueFP
         self.workers = workers
 
     def urlID(self,url):

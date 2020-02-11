@@ -4,7 +4,7 @@ from urllib.request import urlopen
 from lxml import html
 from htmlParser import GoodTextParser
 import shelve
-import hashlib
+from hashlib import sha256
 import urllib.robotparser
 import requests
 import cbor
@@ -13,24 +13,16 @@ from utils.response import Response
 
 #Pages to avoid, due to traps or other reasons
 blacklist = ["https://wics.ics.uci.edu/events/","https://www.ics.uci.edu/~eppstein/pix/chron.html"]
-#Robots.txt disallows
-# robotTxts = ["https://www.ics.uci.edu/robots.txt","https://today.uci.edu/robots.txt","https://www.cs.uci.edu/robots.txt",
-#     "https://www.informatics.uci.edu/robots.txt","https://www.stat.uci.edu/robots.txt"]
 #Issues
 badPhrases = ["/pdf/",".pdf","/?ical=1","/calendar/","format=xml","replytocom","wp-json","?share=google-plus","?share=facebook","?share=twitter"]
-
-# rpList = [] #List to hold robot parsers
-# rp = urllib.robotparser.RobotFileParser()
-# for r in robotTxts:
-#     rp.set_url(r)
-#     rp.read()
-#     rpList.append(rp)
+#Dictionary to hold all robot parsers
 rpDict = dict()
+threshold = 0.96875
 
-def scraper(url, resp, wordCounts, uniqueURLs):
+def scraper(url, resp, wordCounts, uniqueURLs, uniqueFP):
     if 399 < resp.status < 609:
         return list()
-    tokenize(url, wordCounts, uniqueURLs)
+    tokenize(url, wordCounts, uniqueURLs, uniqueFP)
     links = extract_next_links(url, resp, uniqueURLs)
     return [link for link in links if is_valid(link,uniqueURLs)]
 
@@ -50,7 +42,7 @@ def extract_next_links(url, resp, uniqueURLs):
             listOfLinks.append(defraggedLink) #Add to list of links
     return [] # listOfLinks
 
-def tokenize(url, wordCounts, uniqueURLs):
+def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
     try:
         rawHtml =urlopen(url).read().decode("utf-8")
         parser = GoodTextParser()
@@ -58,6 +50,7 @@ def tokenize(url, wordCounts, uniqueURLs):
     except:
         print("Exception caught in tokenize. Bad html content")
         return
+    wordDict = dict()   #Local var to keep count of words
     #print(parser.keptText)
     totalWords = 0
     #Stolen from Annie's assignment 1 (but modified)
@@ -70,29 +63,68 @@ def tokenize(url, wordCounts, uniqueURLs):
             token += c
         elif token != "":
             totalWords += 1
-            if wordCounts.get(token) != None:
-                wordCounts[token] += 1
+            if wordDict.get(token) != None:
+                wordDict[token] += 1
             else:
-                wordCounts[token] = 1
+                wordDict[token] = 1
             token = ""
     if token != "":
         totalWords += 1
-        if wordCounts.get(token) != None:
-            wordCounts[token] += 1
+        if wordDict.get(token) != None:
+            wordDict[token] += 1
         else:
-            wordCounts[token] = 1
+            wordDict[token] = 1
 
-    if wordCounts.get("@mostWords") == None:
-        wordCounts["@mostWords"] = totalWords
-        uniqueURLs["@longestURL"] = url
-    elif wordCounts["@mostWords"] < totalWords:
-        wordCounts["@mostWords"] = totalWords
-        uniqueURLs["@longestURL"] = url
-        print("NEW BIG PAGE")
+    fingerprint = simhash(wordDict)
 
-def fingerprint(strText):
-    pass
+    for word in uniqueFP.keys():
+        if similarity(fingerprint, word) <= threshold:
+            uniqueFP[fingerprint] = "1"
+            for key, value in wordDict.items():
+                if wordCounts.get(key) == None:
+                    wordCounts[key] = value
+                else:
+                    wordCounts[key] += value
+            if wordCounts.get("@mostWords") == None:
+                wordCounts["@mostWords"] = totalWords
+                uniqueURLs["@longestURL"] = url
+            elif wordCounts["@mostWords"] < totalWords:
+                wordCounts["@mostWords"] = totalWords
+                uniqueURLs["@longestURL"] = url
+                print("NEW BIG PAGE")
 
+def simhash(wordDict):
+    fp = [0]*256
+    #Hash every word
+    #For bit in word, add/sub to vector times the weight
+    for word,count in wordDict.items():
+        wordHash = sha256(word.encode("utf-8")).hexdigest() #Hash a hex representation
+        wordHash = "{0:0256b}".format(int(wordHash,16)) #Convert hex string to binary string
+        while wordHash != "":
+            if wordHash[len(wordHash)-1] == "1":
+                fp[len(wordHash)-1] += count
+                wordHash = wordHash[:-1]
+            else:
+                fp[len(wordHash)-1] -= count
+                wordHash = wordHash[:-1]
+    #Turn all to 0 if neg, 1 if pos
+    fpStr = ""
+    for num in fp:
+        if num < 0:
+            #If neg, set bit to 0
+            fpStr = fpStr + "0"
+        else:
+            #Else set to 1
+            fpStr = fpStr + "1"
+    return fpStr
+
+#Returns percent of similarity between two strings
+def similarity(str1,str2):
+    i = 0
+    for s in range(0,256):
+        if str1[s] == str2[s]:
+            i += 1
+    return i/256
 
 
 def is_valid(url, uniqueURLs):
