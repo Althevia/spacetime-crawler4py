@@ -76,22 +76,25 @@ def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
             wordDict[token] = 1
 
     fingerprint = simhash(wordDict)
-
+    isGoodFP= True
     for word in uniqueFP.keys():
-        if similarity(fingerprint, word) <= threshold:
-            uniqueFP[fingerprint] = "1"
-            for key, value in wordDict.items():
-                if wordCounts.get(key) == None:
-                    wordCounts[key] = value
-                else:
-                    wordCounts[key] += value
-            if wordCounts.get("@mostWords") == None:
-                wordCounts["@mostWords"] = totalWords
-                uniqueURLs["@longestURL"] = url
-            elif wordCounts["@mostWords"] < totalWords:
-                wordCounts["@mostWords"] = totalWords
-                uniqueURLs["@longestURL"] = url
-                print("NEW BIG PAGE")
+        if similarity(fingerprint, word) > threshold:
+            isGoodFP = False
+            break
+    if isGoodFP:
+        uniqueFP[fingerprint] = "1"
+        for key, value in wordDict.items():
+            if wordCounts.get(key) == None:
+                wordCounts[key] = value
+            else:
+                wordCounts[key] += value
+        if wordCounts.get("@mostWords") == None:
+            wordCounts["@mostWords"] = totalWords
+            uniqueURLs["@longestURL"] = url
+        elif wordCounts["@mostWords"] < totalWords:
+            wordCounts["@mostWords"] = totalWords
+            uniqueURLs["@longestURL"] = url
+            print("NEW BIG PAGE")
 
 def simhash(wordDict):
     fp = [0]*256
