@@ -26,19 +26,20 @@ class Worker(Thread):
                 #No more worker urls, search frontier
                 tbd_url = self.frontier.get_tbd_url()
                 if not tbd_url:
+                    checkAll = False
                     for worker in self.workers:
                         if len(worker.myBackupList) != 0:
-                            print(worker.worker_id, "is still running")
+                            #print(worker.worker_id, "is still running")
                             checkAll = True
                         if checkAll == False:
-                            sleep(3)
+                            time.sleep(3)
                     if checkAll == False:
                         for worker in self.workers:
                             if len(worker.myBackupList) != 0:
-                                print(worker.worker_id, "is still running")
+                                #print(worker.worker_id, "is still running")
                                 checkAll = True
                             if checkAll != True:
-                                sleep(3)
+                                time.sleep(3)
                     if checkAll == False:
                         break
                 else:
@@ -46,8 +47,6 @@ class Worker(Thread):
                     if wID != self.worker_id:
                         #Not my url, give to someone else
                         self.workers[wID].addToMine(tbd_url)
-                        if self.workers[wID].running == False:
-                            self.workers[wID].running = True
                     else:
                         self.myBackupList.append(tbd_url)
             else:
