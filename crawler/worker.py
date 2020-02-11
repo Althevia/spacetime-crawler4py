@@ -23,45 +23,47 @@ class Worker(Thread):
         
     def run(self):
         while True:
-            if len(self.myBackupList) == 0:
-                #No more worker urls, search frontier
-                tbd_url = self.frontier.get_tbd_url()
-                if not tbd_url:
-                    self.logger.info("Frontier is empty. Stopping Crawler.")
-                    checkAll = False
-                    for worker in self.workers:
-                        if worker.running == True:
-                            print(worker.worker_id, "is still running")
-                            checkAll = True
-                    if checkAll == False:
+            while(self.running)
+                if len(self.myBackupList) == 0:
+                    #No more worker urls, search frontier
+                    tbd_url = self.frontier.get_tbd_url()
+                    if not tbd_url:
                         print(self.worker_id, "is sleeping!")
                         self.running = False
-                        break
-                    time.sleep(2)
-                else:
-                    wID = self.urlID(tbd_url)
-                    if wID != self.worker_id:
-                        #Not my url, give to someone else
-                        self.workers[wID].addToMine(tbd_url)
-                        if self.workers[wID].running == False:
-                            self.workers[wID].running = True
-                            self.workers[wID].start()
+                        time.sleep(6)
                     else:
-                        self.myBackupList.append(tbd_url)
-            else:
-                tbd_url = self.myBackupList.pop(len(self.myBackupList)-1) #Take url belonging to this worker
-                try:
-                    resp = download(tbd_url, self.config, self.logger)
-                    self.logger.info(
-                        f"Downloaded {tbd_url}, status <{resp.status}>, "
-                        f"using cache {self.config.cache_server}.")
-                    scraped_urls = scraper(tbd_url, resp, self.wordCounts, self.uniqueURLs)
-                    for scraped_url in scraped_urls:
-                        self.frontier.add_url(scraped_url)
-                except:
-                    print("Timeout error (5 seconds):",tbd_url)
-                self.frontier.mark_url_complete(tbd_url)
-                time.sleep(self.config.time_delay)
+                        wID = self.urlID(tbd_url)
+                        if wID != self.worker_id:
+                            #Not my url, give to someone else
+                            self.workers[wID].addToMine(tbd_url)
+                            if self.workers[wID].running == False:
+                                self.workers[wID].running = True
+                        else:
+                            self.myBackupList.append(tbd_url)
+                else:
+                    tbd_url = self.myBackupList.pop(len(self.myBackupList)-1) #Take url belonging to this worker
+                    try:
+                        resp = download(tbd_url, self.config, self.logger)
+                        self.logger.info(
+                            f"Downloaded {tbd_url}, status <{resp.status}>, "
+                            f"using cache {self.config.cache_server}.")
+                        scraped_urls = scraper(tbd_url, resp, self.wordCounts, self.uniqueURLs)
+                        for scraped_url in scraped_urls:
+                            self.frontier.add_url(scraped_url)
+                    except:
+                        print("Timeout error (5 seconds):",tbd_url)
+                    self.frontier.mark_url_complete(tbd_url)
+                    time.sleep(self.config.time_delay)
+            #check if others are running
+            checkAll = False
+            for worker in self.workers:
+                if worker.running == True or len(worker.myBackupList) != 0:
+                    print(worker.worker_id, "is still running")
+                    checkAll = True
+            if checkAll == False:
+                break
+            self.running = True
+            time.sleep(2)
 
     def addInfo(self,wordCounts,uniqueURLs,workers):
         self.wordCounts = wordCounts
