@@ -23,14 +23,26 @@ class Worker(Thread):
         
     def run(self):
         while True:
-            while(self.running)
+            while(self.running):
                 if len(self.myBackupList) == 0:
                     #No more worker urls, search frontier
                     tbd_url = self.frontier.get_tbd_url()
                     if not tbd_url:
-                        print(self.worker_id, "is sleeping!")
-                        self.running = False
-                        time.sleep(6)
+                        for worker in self.workers:
+                            if len(worker.myBackupList) != 0:
+                                print(worker.worker_id, "is still running")
+                                checkAll = True
+                            if checkAll == False:
+                                sleep(3)
+                        if checkAll == False:
+                            for worker in self.workers:
+                                if len(worker.myBackupList) != 0:
+                                    print(worker.worker_id, "is still running")
+                                    checkAll = True
+                                if checkAll != True:
+                                    sleep(3)
+                        if checkAll == False:
+                            break
                     else:
                         wID = self.urlID(tbd_url)
                         if wID != self.worker_id:
@@ -54,16 +66,6 @@ class Worker(Thread):
                         print("Timeout error (5 seconds):",tbd_url)
                     self.frontier.mark_url_complete(tbd_url)
                     time.sleep(self.config.time_delay)
-            #check if others are running
-            checkAll = False
-            for worker in self.workers:
-                if worker.running == True or len(worker.myBackupList) != 0:
-                    print(worker.worker_id, "is still running")
-                    checkAll = True
-            if checkAll == False:
-                break
-            self.running = True
-            time.sleep(2)
 
     def addInfo(self,wordCounts,uniqueURLs,workers):
         self.wordCounts = wordCounts
