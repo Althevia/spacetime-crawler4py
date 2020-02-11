@@ -18,6 +18,7 @@ class Worker(Thread):
         self.workers = 0    #All the workers
         self.myBackupList= list()      #List of urls belonging to this worker
         self.worker_id = worker_id
+        self.running = True
         super().__init__(daemon=True)
         
     def run(self):
@@ -29,11 +30,12 @@ class Worker(Thread):
                     self.logger.info("Frontier is empty. Stopping Crawler.")
                     checkAll = False
                     for worker in self.workers:
-                        if len(worker.myBackupList) != 0:
-                            print(worker.worker_id)
+                        if worker.running == True:
+                            print(worker.worker_id, "is still running")
                             checkAll = True
                     if checkAll == False:
-                        print(self.worker_id, "is leaving!")
+                        print(self.worker_id, "is sleeping!")
+                        self.running = False
                         break
                     time.sleep(2)
                 else:
@@ -41,6 +43,9 @@ class Worker(Thread):
                     if wID != self.worker_id:
                         #Not my url, give to someone else
                         self.workers[wID].addToMine(tbd_url)
+                        if self.workers[wID].running == False:
+                            self.workers[wID].running = True
+                            self.workers[wID].start()
                     else:
                         self.myBackupList.append(tbd_url)
             else:
