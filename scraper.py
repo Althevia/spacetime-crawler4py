@@ -41,7 +41,7 @@ def extract_next_links(url, resp, uniqueURLs):
             #Need to check for duplicates
             uniqueURLs[defraggedLink] = 1
             listOfLinks.append(defraggedLink) #Add to list of links
-    return listOfLinks
+    return [] #listOfLinks
 
 def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
     try:
