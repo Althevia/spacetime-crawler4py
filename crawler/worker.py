@@ -61,7 +61,7 @@ class Worker(Thread):
         self.workers = workers
 
     def urlID(self,url):
-        parse = urlparse(url)
+        parsed = urlparse(url)
 
         r = re.match(r"((.*\.|)ics\.uci\.edu)",parsed.netloc.lower())
         if r == None:

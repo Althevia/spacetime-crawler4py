@@ -130,20 +130,27 @@ def is_valid(url, uniqueURLs):
 
         #Reads robots.txt to check for disallows
         robotPage = parsed.scheme + "://" + parsed.netloc.lower() + "/robots.txt"
+        print("gotRobotPage")
         if rpDict.get(robotPage) == None:
             time.sleep(uniqueURLs["@config"].time_delay)
             rResp = download(robotPage,uniqueURLs["@config"])
+            print("downloaded robotpage")
             if not (399 < rResp.status < 609):
                 rString = rResp.raw_response.content.decode()
                 linesList = rString.split("\n")
                 rp = urllib.robotparser.RobotFileParser()
                 rp.parse(linesList)
                 rpDict[robotPage] = rp
+                print("put in robot dict")
         else:
+            print("getting page from dict")
             rp = rpDict.get(robotPage)
         if rp != None:
+            print("try to fetch")
             if rp.can_fetch("*",url) == False:
+                print("can fetch")
                 return False
+        print("it's none!")
 
         if url[-5:] == "/feed" or url[-6:] == "/feed/":
             return False
