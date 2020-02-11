@@ -4,7 +4,7 @@ from urllib.request import urlopen
 from lxml import html
 from htmlParser import GoodTextParser
 import shelve
-from hashlib import sha256
+from hashlib import sha384
 import urllib.robotparser
 import requests
 import cbor
@@ -17,7 +17,7 @@ blacklist = ["https://wics.ics.uci.edu/events/","https://www.ics.uci.edu/~eppste
 badPhrases = ["/pdf/",".pdf","/?ical=1","/calendar/","format=xml","replytocom","wp-json","?share=google-plus","?share=facebook","?share=twitter"]
 #Dictionary to hold all robot parsers
 rpDict = dict()
-threshold = 0.96875
+threshold = .95 #0.96875
 
 def scraper(url, resp, wordCounts, uniqueURLs, uniqueFP):
     if 399 < resp.status < 609:
@@ -40,7 +40,7 @@ def extract_next_links(url, resp, uniqueURLs):
             #Need to check for duplicates
             uniqueURLs[defraggedLink] = 1
             listOfLinks.append(defraggedLink) #Add to list of links
-    return [] # listOfLinks
+    return listOfLinks
 
 def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
     try:
@@ -80,6 +80,7 @@ def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
     for word in uniqueFP.keys():
         if similarity(fingerprint, word) > threshold:
             isGoodFP = False
+            print("is duplicate:", url)
             break
     if isGoodFP:
         uniqueFP[fingerprint] = "1"
@@ -97,12 +98,12 @@ def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
             print("NEW BIG PAGE")
 
 def simhash(wordDict):
-    fp = [0]*256
+    fp = [0]*384
     #Hash every word
     #For bit in word, add/sub to vector times the weight
     for word,count in wordDict.items():
-        wordHash = sha256(word.encode("utf-8")).hexdigest() #Hash a hex representation
-        wordHash = "{0:0256b}".format(int(wordHash,16)) #Convert hex string to binary string
+        wordHash = sha384(word.encode("utf-8")).hexdigest() #Hash a hex representation
+        wordHash = "{0:0384b}".format(int(wordHash,16)) #Convert hex string to binary string
         while wordHash != "":
             if wordHash[len(wordHash)-1] == "1":
                 fp[len(wordHash)-1] += count
@@ -124,10 +125,10 @@ def simhash(wordDict):
 #Returns percent of similarity between two strings
 def similarity(str1,str2):
     i = 0
-    for s in range(0,256):
+    for s in range(0,384):
         if str1[s] == str2[s]:
             i += 1
-    return i/256
+    return i/384
 
 
 def is_valid(url, uniqueURLs):
