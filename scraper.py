@@ -6,9 +6,10 @@ from htmlParser import GoodTextParser
 import shelve
 import hashlib
 import urllib.robotparser
+from utils.download import download
 
 #Pages to avoid, due to traps or other reasons
-blacklist = ["https://wics.ics.uci.edu/events/"]
+blacklist = ["https://wics.ics.uci.edu/events/","https://www.ics.uci.edu/~eppstein/pix/chron.html"]
 #Robots.txt disallows
 # robotTxts = ["https://www.ics.uci.edu/robots.txt","https://today.uci.edu/robots.txt","https://www.cs.uci.edu/robots.txt",
 #     "https://www.informatics.uci.edu/robots.txt","https://www.stat.uci.edu/robots.txt"]
@@ -21,13 +22,14 @@ badPhrases = ["/pdf/",".pdf","/?ical=1","/calendar/","format=xml","replytocom","
 #     rp.set_url(r)
 #     rp.read()
 #     rpList.append(rp)
+rpDict = dict()
 
 def scraper(url, resp, wordCounts, uniqueURLs):
     if 399 < resp.status < 609:
         return list()
     tokenize(url, wordCounts, uniqueURLs)
     links = extract_next_links(url, resp, uniqueURLs)
-    return [link for link in links if is_valid(link)]
+    return [link for link in links if is_valid(link,uniqueURLs)]
 
 def extract_next_links(url, resp, uniqueURLs):
     # Implementation requred.
@@ -90,7 +92,7 @@ def fingerprint(strText):
 
 
 
-def is_valid(url):
+def is_valid(url, uniqueURLs):
     try:   
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
@@ -128,10 +130,18 @@ def is_valid(url):
 
         #Reads robots.txt to check for disallows
         robotPage = parsed.scheme + "://" + parsed.netloc.lower() + "/robots.txt"
-        rp = urllib.robotparser.RobotFileParser()
-        rp = rp.set_url(robotPage)
+        if rpDict.get(robotPage) == None:
+            time.sleep(uniqueURLs["@config"].time_delay)
+            rResp = download(robotPage,uniqueURLs["@config"])
+            if not (399 < rResp.status < 609):
+                rString = rResp.raw_response.content.decode()
+                linesList = rString.split("\n")
+                rp = urllib.robotparser.RobotFileParser()
+                rp.parse(linesList)
+                rpDict[robotPage] = rp
+        else:
+            rp = rpDict.get(robotPage)
         if rp != None:
-            rp.read()
             if rp.can_fetch("*",url) == False:
                 return False
 

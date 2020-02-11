@@ -15,6 +15,7 @@ class Crawler(object):
         self.frontier = frontier_factory(config, restart)
         self.workers = list()
         self.worker_factory = worker_factory
+        uniqueURLs["@config"] = config
 
     def start_async(self):
         self.workers = [
@@ -39,7 +40,7 @@ class Crawler(object):
         #uniqueURLs = shelve.open("uniqueURLs.shelve")
         reportFile = open("report.txt", "w")
         print("Page with most words ("+ str(wordCounts["@mostWords"]) + "): " + uniqueURLs["@longestURL"], file = reportFile)
-        print("Number of unique pages:",len(uniqueURLs)-1, file = reportFile)
+        print("Number of unique pages:",len(uniqueURLs)-2, file = reportFile)
         print("Fifty most common words:", file = reportFile)
         stopWords = ["a","about","above","after","again","against","all","am","an","and","any","are","aren't",
             "as","at","be","because","been","before","being","below","between","both","but","by","can't","cannot",

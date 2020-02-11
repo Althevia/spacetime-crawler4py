@@ -62,12 +62,24 @@ class Worker(Thread):
 
     def urlID(self,url):
         parse = urlparse(url)
-        netloc = parse.netloc.lower()
-        if netloc[:4] == "www.":
-            netloc = netloc[4:]
-        
-        wID = (ord(netloc[0]) - 97)
-        wID = wID % len(self.workers)
+
+        r = re.match(r"((.*\.|)ics\.uci\.edu)",parsed.netloc.lower())
+        if r == None:
+            r = re.match(r"((.*\.|)cs\.uci\.edu)",parsed.netloc.lower())
+            if r == None:
+                r = re.match(r"((.*\.|)informatics\.uci\.edu)",parsed.netloc.lower())
+                if r == None:
+                    r = re.match(r"((.*\.|)stat\.uci\.edu)",parsed.netloc.lower())
+                    if r == None:
+                        wID = 4
+                    else:
+                        wID = 3
+                else:
+                    wID = 2
+            else:
+                wID = 1
+        else:
+            wID = 0
         return wID
 
     def addToMine(self,url):
