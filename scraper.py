@@ -25,7 +25,7 @@ def scraper(url, resp, wordCounts, uniqueURLs, uniqueFP):
         return list()
     tokenize(url, wordCounts, uniqueURLs, uniqueFP)
     links = extract_next_links(url, resp, uniqueURLs)
-    return [link for link in links if is_valid(link,uniqueURLs)]
+    return []#[link for link in links if is_valid(link,uniqueURLs)]
 
 def extract_next_links(url, resp, uniqueURLs):
     # Implementation requred.
@@ -38,6 +38,7 @@ def extract_next_links(url, resp, uniqueURLs):
         fragLen = len(parsed.fragment)  #Remove the fragments
         defraggedLink = link[2][0:len(link[2])-fragLen]
         defraggedLink.rstrip("/")
+        defraggedLink.rstrip("/#")
         if uniqueURLs.get(defraggedLink) == None:
             #Need to check for duplicates
             uniqueURLs[defraggedLink] = 1
@@ -78,9 +79,10 @@ def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
             wordDict[token] = 1
 
     fingerprint = simhash(wordDict)
+    print(fingerprint,url)
     isGoodFP= True
-    for word in uniqueFP.keys():
-        if similarity(fingerprint, word) > threshold:
+    for oldfp in uniqueFP.keys():
+        if similarity(fingerprint, oldfp) > threshold:
             isGoodFP = False
             #Is a duplicate
             break
