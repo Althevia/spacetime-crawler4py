@@ -14,7 +14,8 @@ from utils.response import Response
 #Pages to avoid, due to traps or other reasons
 blacklist = ["https://wics.ics.uci.edu/events/","https://www.ics.uci.edu/~eppstein/pix/chron.html"]
 #Issues
-badPhrases = ["/pdf/",".pdf","/?ical=1","/calendar/","format=xml","replytocom","wp-json","?share=google-plus","?share=facebook","?share=twitter"]
+badPhrases = ["/pdf/",".pdf",".zip",".ppt","/?ical=1","/calendar/","format=xml","replytocom",
+    "wp-json","?share=google-plus","?share=facebook","?share=twitter","action=login"]
 #Dictionary to hold all robot parsers
 rpDict = dict()
 threshold = .95 #0.96875
@@ -199,7 +200,7 @@ def is_valid(url, uniqueURLs):
             #print("Timeout error (5 seconds):",robotPage)
             pass
 
-        if url[-5:] == "/feed" or url[-6:] == "/feed/":
+        if url[-5:] == "/feed":
             return False
 
         return True
