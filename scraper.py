@@ -25,7 +25,7 @@ def scraper(url, resp, wordCounts, uniqueURLs, uniqueFP):
         return list()
     tokenize(url, wordCounts, uniqueURLs, uniqueFP)
     links = extract_next_links(url, resp, uniqueURLs)
-    return []#[link for link in links if is_valid(link,uniqueURLs)]
+    return [link for link in links if is_valid(link,uniqueURLs)]
 
 def extract_next_links(url, resp, uniqueURLs):
     # Implementation requred.
