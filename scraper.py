@@ -79,7 +79,6 @@ def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
             wordDict[token] = 1
 
     fingerprint = simhash(wordDict)
-    print(fingerprint,url)
     isGoodFP= True
     for oldfp in uniqueFP.keys():
         if similarity(fingerprint, oldfp) > threshold:
