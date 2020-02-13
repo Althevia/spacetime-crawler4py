@@ -12,7 +12,7 @@ import time
 from utils.response import Response
 
 #Pages to avoid, due to traps or other reasons
-blacklist = ["https://wics.ics.uci.edu/events/","https://www.ics.uci.edu/~eppstein/pix/chron.html"]
+blacklist = ["https://wics.ics.uci.edu/events/","https://www.ics.uci.edu/~eppstein/pix"]
 #Issues
 badPhrases = ["/pdf/",".pdf",".zip",".ppt","/?ical=1","/calendar/","format=xml","replytocom",
     "wp-json","?share=google-plus","?share=facebook","?share=twitter","action=login"]
