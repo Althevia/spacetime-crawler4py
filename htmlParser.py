@@ -13,6 +13,7 @@ class GoodTextParser(HTMLParser):
         tempStr = ""
         isDesc = False
         self.currentTag = tag
+        #adding metadata information to the text we parse
         for atter in attrs:
             if (atter[0] == "name" and atter[1] == "description"):
                 isDesc = True
@@ -23,5 +24,6 @@ class GoodTextParser(HTMLParser):
 
     #What to do with info between tags <>.*<>
     def handle_data(self, data):
+        #don't want to add information that is under html style or script information
         if self.currentTag != "script" and self.currentTag != "style":
             self.keptText += " " + data

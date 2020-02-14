@@ -18,9 +18,11 @@ badPhrases = ["/pdf/",".pdf",".zip",".ppt","/?ical=1","/calendar/","format=xml",
     "wp-json","?share=google-plus","?share=facebook","?share=twitter","action=login"]
 #Dictionary to hold all robot parsers
 rpDict = dict()
+#threshold for how similar we will allow documents (for simhash)
 threshold = .95 #0.96875
 
 def scraper(url, resp, wordCounts, uniqueURLs, uniqueFP):
+    #check if the resp is a valid one
     if 399 < resp.status < 609:
         return list()
     tokenize(url, wordCounts, uniqueURLs, uniqueFP)
@@ -28,7 +30,6 @@ def scraper(url, resp, wordCounts, uniqueURLs, uniqueFP):
     return [link for link in links if is_valid(link,uniqueURLs)]
 
 def extract_next_links(url, resp, uniqueURLs):
-    # Implementation requred.
     rawHtml = resp.raw_response.content #Gets the string of the entire html document
     stringDoc = html.fromstring(rawHtml)
     linksList = list(stringDoc.iterlinks()) #List of tuples of link kind of objects
@@ -88,6 +89,7 @@ def tokenize(url, wordCounts, uniqueURLs, uniqueFP):
     if isGoodFP:
         uniqueFP[fingerprint] = "1"
         for key, value in wordDict.items():
+            #add to the wordCounts shelf
             if wordCounts.get(key) == None:
                 wordCounts[key] = value
             else:
@@ -108,10 +110,11 @@ def simhash(wordDict):
         wordHash = sha384(word.encode("utf-8")).hexdigest() #Hash a hex representation
         wordHash = "{0:0384b}".format(int(wordHash,16)) #Convert hex string to binary string
         while wordHash != "":
+            #add the value of the count to the correct bit position in the fp array if the bit is positive
             if wordHash[len(wordHash)-1] == "1":
                 fp[len(wordHash)-1] += count
                 wordHash = wordHash[:-1]
-            else:
+            else: #else, subtract the count
                 fp[len(wordHash)-1] -= count
                 wordHash = wordHash[:-1]
     #Turn all to 0 if neg, 1 if pos
@@ -174,6 +177,8 @@ def is_valid(url, uniqueURLs):
             robotPage = parsed.scheme + "://" + parsed.netloc.lower() + "/robots.txt"
             config = uniqueURLs["@config"]
             if rpDict.get(robotPage) == None:
+                #taken from the download method given to us but modified so we don't bypass the cache
+                #a time delay added so we keep with politeness
                 time.sleep(config.time_delay)
                 host, port = config.cache_server
                 resp = requests.get(
@@ -187,6 +192,7 @@ def is_valid(url, uniqueURLs):
                         "status": resp.status_code,
                         "url": robotPage})
                 if not (399 < rResp.status < 609):
+                    #make sure the page was able to be opened
                     rString = rResp.raw_response.content.decode("utf-8")
                     linesList = rString.split("\n")
                     rp = urllib.robotparser.RobotFileParser()
@@ -195,6 +201,7 @@ def is_valid(url, uniqueURLs):
             else:
                 rp = rpDict.get(robotPage)
             if rp != None:
+                #make sure this page is allowed to be visited from this robots.txt page
                 if rp.can_fetch("*",url) == False:
                     return False
         except:
