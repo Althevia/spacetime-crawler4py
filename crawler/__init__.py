@@ -39,6 +39,7 @@ class Crawler(object):
     def reportAnswers(self):
         #uniqueURLs = shelve.open("uniqueURLs.shelve")
         reportFile = open("report.txt", "w")
+        print("Annie Zhao (53048155) and Mia Markovic (39425669)'s report", file = reportFile)
         print("Page with most words ("+ str(wordCounts["@mostWords"]) + "): " + uniqueURLs["@longestURL"], file = reportFile)
         print("Number of unique pages:",len(uniqueURLs)-2, file = reportFile)
         print("Fifty most common words:", file = reportFile)
@@ -60,7 +61,7 @@ class Crawler(object):
         sortedWords = sorted(wordCounts.items(),key=(lambda x: -x[1])) 
         index = 0
         while words != 50:
-            if (not sortedWords[index][0] in stopWords):
+            if (not sortedWords[index][0] in stopWords) and (len(sortedWords[index][0]) > 2):
                 if (words < 49):
                     print(sortedWords[index][0],end = ", ", file = reportFile)
                 else:

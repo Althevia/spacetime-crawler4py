@@ -39,7 +39,6 @@ def extract_next_links(url, resp, uniqueURLs):
         fragLen = len(parsed.fragment)  #Remove the fragments
         defraggedLink = link[2][0:len(link[2])-fragLen]
         defraggedLink.rstrip("/")
-        defraggedLink.rstrip("/#")
         if uniqueURLs.get(defraggedLink) == None:
             #Need to check for duplicates
             uniqueURLs[defraggedLink] = 1

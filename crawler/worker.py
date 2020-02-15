@@ -35,14 +35,14 @@ class Worker(Thread):
                             #Some worker is still running
                             checkAll = True
                         if checkAll == False:
-                            time.sleep(3)
+                            time.sleep(2)
                     if checkAll == False:
                         for worker in self.workers:
                             if len(worker.myBackupList) != 0:
                                 #Some worker is still running! :O
                                 checkAll = True
                             if checkAll != True:
-                                time.sleep(3)
+                                time.sleep(2)
                     if checkAll == False:
                         break
                 else:
