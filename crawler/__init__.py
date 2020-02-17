@@ -79,7 +79,7 @@ class Crawler(object):
                 if netloc[:4] == "www.":
                     netloc = netloc[4:]
                 if re.match(r"(.*\.|)ics\.uci\.edu", netloc) != None:
-                    if url[-5:] != "/feed":
+                    if url[-5:] != "/feed" and url[-5:] != "feed/" and url[-4:] != ".jpg":
                         if urlSubDict.get(netloc) == None:
                             urlSubDict[netloc] = 1
                         else:
