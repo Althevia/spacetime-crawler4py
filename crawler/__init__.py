@@ -79,11 +79,12 @@ class Crawler(object):
                 if netloc[:4] == "www.":
                     netloc = netloc[4:]
                 if re.match(r"(.*\.|)ics\.uci\.edu", netloc) != None:
-                    if urlSubDict.get(netloc) == None:
-                        urlSubDict[netloc] = 1
-                    else:
-                        urlSubDict[netloc] += 1
-        print("Number of unique URLs in the ics.uci.edu subdomain: " + str(len(urlSubDict)), file = reportFile)
+                    if url[-5:] != "/feed":
+                        if urlSubDict.get(netloc) == None:
+                            urlSubDict[netloc] = 1
+                        else:
+                            urlSubDict[netloc] += 1
+        print("Number of ics.uci.edu subdomains: " + str(len(urlSubDict)), file = reportFile)
         for key, value in sorted(urlSubDict.items()):
             print("https://" + key + ", " + str(value), file = reportFile)
         wordCounts.close()
