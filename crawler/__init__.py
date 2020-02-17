@@ -56,7 +56,9 @@ class Crawler(object):
             "too","under","until","up","very","was","wasn't","we","we'd","we'll","we're","we've","were","weren't",
             "what","what's","when","when's","where","where's","which","while","who","who's","whom","why","why's",
             "with","won't","would","wouldn't","you","you'd","you'll","you're","you've","your","yours","yourself",
-            "yourselves","@mostWords"]
+            "yourselves","@mostWords","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019",
+            "2020","https","will","http","can","january","february","march","april","may","june","july","august",
+            "september","october","november","december","0000"]
         words = 0
         sortedWords = sorted(wordCounts.items(),key=(lambda x: -x[1])) 
         index = 0

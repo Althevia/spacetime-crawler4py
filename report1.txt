@@ -1,9 +1,8 @@
-Annie Zhao (53048155) and Mia Markovic (39425669)'s report
 Page with most words (385018): http://www.ics.uci.edu/~kay/wordlist.txt
-Number of unique pages: 57629
+Number of unique pages: 57552
 Fifty most common words:
-research, computer, uci, information, software, student, ramesh, ics, students, informatics, edu, science, news, engineering, data, events, graduate, courses, past, current, undergraduate, books, read, projects, department, computing, people, search, comments, contact, design, jain, time, comment, support, policies, university, course, new, systems, irvine, wordpress, faculty, one, school, profiles, vision, bren, page, management
-Number of unique URLs in the ics.uci.edu subdomain: 120
+0, border, color, none, important, button, ect, hover, woocommerce, events, background, tribe, photonic, event, content, font, padding, research, box, s, 1, top, img, margin, input, page, left, timeline, list, li, right, type, title, width, navigation, computer, bottom, current, height, 2019, post, uci, 2018, featured, ramesh, 1em, information, alt, d, acme
+Number of unique URLs in the ics.uci.edu subdomain: 118
 https://acoi.ics.uci.edu, 1
 https://aiclub.ics.uci.edu, 1
 https://alumni.ics.uci.edu, 5
@@ -19,46 +18,44 @@ https://cert.ics.uci.edu, 6
 https://cgvw.ics.uci.edu, 1
 https://checkmate.ics.uci.edu, 2
 https://chenli.ics.uci.edu, 53
-https://cloudberry.ics.uci.edu, 203
-https://cml.ics.uci.edu, 714
+https://cloudberry.ics.uci.edu, 217
+https://cml.ics.uci.edu, 717
 https://cocoa-krispies.ics.uci.edu, 1
 https://codeexchange.ics.uci.edu, 4
 https://computableplant.ics.uci.edu, 135
 https://cradl.ics.uci.edu, 117
 https://cwicsocal18.ics.uci.edu, 969
-https://cyberclub.ics.uci.edu, 1
+https://cyberclub.ics.uci.edu, 2
 https://dataguard.ics.uci.edu, 1
 https://dataprotector.ics.uci.edu, 1
 https://dblp.ics.uci.edu, 2
 https://dejavu.ics.uci.edu, 1
-https://duttgroup.ics.uci.edu, 488
+https://duttgroup.ics.uci.edu, 1
 https://dynamo.ics.uci.edu, 1
 https://elms.ics.uci.edu, 2
 https://emj-pc.ics.uci.edu, 1
 https://emj.ics.uci.edu, 193
 https://esl.ics.uci.edu, 1
-https://evoke.ics.uci.edu, 1079
+https://evoke.ics.uci.edu, 1105
 https://flamingo.ics.uci.edu, 8
 https://fr.ics.uci.edu, 5
 https://frost.ics.uci.edu, 1
-https://futurehealth.ics.uci.edu, 84
-https://givargis.ics.uci.edu, 1
-https://grape.ics.uci.edu, 18
+https://futurehealth.ics.uci.edu, 76
+https://grape.ics.uci.edu, 14
 https://graphics.ics.uci.edu, 18
 https://graphmod.ics.uci.edu, 1
 https://hai.ics.uci.edu, 2
 https://halps.ics.uci.edu, 1
-https://hana.ics.uci.edu, 30
+https://hana.ics.uci.edu, 31
 https://hanalab.ics.uci.edu, 1
 https://helpdesk.ics.uci.edu, 1
 https://hombao.ics.uci.edu, 2
 https://honors.ics.uci.edu, 96
 https://i-sensorium.ics.uci.edu, 1
-https://iasl.ics.uci.edu, 9
-https://ics.uci.edu, 3348
+https://iasl.ics.uci.edu, 8
+https://ics.uci.edu, 3042
 https://informatics.ics.uci.edu, 5
 https://intranet.ics.uci.edu, 4
-https://ipf.ics.uci.edu, 48
 https://ipubmed.ics.uci.edu, 17
 https://isg.ics.uci.edu, 748
 https://jgarcia.ics.uci.edu, 124
@@ -80,7 +77,7 @@ https://mse.ics.uci.edu, 1
 https://mswe.ics.uci.edu, 158
 https://nalini.ics.uci.edu, 51
 https://new-psearch.ics.uci.edu, 1
-https://ngs.ics.uci.edu, 6648
+https://ngs.ics.uci.edu, 7434
 https://nile.ics.uci.edu, 1
 https://omni.ics.uci.edu, 1
 https://pasteur.ics.uci.edu, 2
@@ -92,12 +89,12 @@ https://redmiles.ics.uci.edu, 45
 https://riscit.ics.uci.edu, 1
 https://satware.ics.uci.edu, 1
 https://sconce.ics.uci.edu, 4
-https://sdcl.ics.uci.edu, 941
+https://sdcl.ics.uci.edu, 945
 https://se.ics.uci.edu, 1
 https://seal.ics.uci.edu, 7
 https://seraja.ics.uci.edu, 1
 https://sherlock.ics.uci.edu, 2
-https://sli.ics.uci.edu, 2543
+https://sli.ics.uci.edu, 2592
 https://soc.ics.uci.edu, 1
 https://sourcerer.ics.uci.edu, 2
 https://sprout.ics.uci.edu, 6
@@ -115,7 +112,7 @@ https://ugradforms.ics.uci.edu, 1
 https://vid.ics.uci.edu, 1
 https://vision.ics.uci.edu, 9
 https://wearablegames.ics.uci.edu, 80
-https://wics.ics.uci.edu, 4307
+https://wics.ics.uci.edu, 4422
 https://www-db.ics.uci.edu, 32
 https://www-db.ics.uci.edu:8000, 1
 https://www-db.ics.uci.edu:8003, 1
